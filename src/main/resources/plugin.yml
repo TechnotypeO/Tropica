@@ -1,6 +1,6 @@
 name: Tropica
 version: ${project.version}
-main: me.tecc.tropica.tropica.Tropica
+main: me.tecc.tropica.Tropica
 api-version: 1.13
 authors: [Technotype, MarcusSlover]
 description: Tropica is an open source survival plugin

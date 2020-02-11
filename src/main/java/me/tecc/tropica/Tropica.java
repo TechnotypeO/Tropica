@@ -1,4 +1,4 @@
-package me.tecc.tropica.tropica;
+package me.tecc.tropica;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
