@@ -12,14 +12,12 @@ import java.util.function.Consumer;
 
 public abstract class AbstractContainer implements IStorage {
     private final static ExecutorService executor = Executors.newCachedThreadPool();
-    private static AbstractContainer abstractContainer;
 
     private Plugin plugin;
     private File file;
     public FileConfiguration config;
 
     public AbstractContainer(Plugin plugin, String filename) {
-        abstractContainer = this;
 
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), filename);
@@ -97,9 +95,5 @@ public abstract class AbstractContainer implements IStorage {
                 consumer.accept(this.save());
             }
         });
-    }
-
-    public static AbstractContainer getInstance() {
-        return abstractContainer;
     }
 }
