@@ -5,6 +5,7 @@ api-version: 1.13
 authors: [Technotype, MarcusSlover, funtodead]
 description: Tropica is an open source survival plugin
 website: https://tecc.me/projects/tropica/
+
 commands:
   help:
     aliases:
