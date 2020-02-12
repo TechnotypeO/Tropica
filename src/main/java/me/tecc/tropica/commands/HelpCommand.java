@@ -17,24 +17,6 @@ public class HelpCommand implements CommandExecutor {
         if (sender instanceof Player) {//checks if the sender is a player
             //there is your player variable
             Player player = (Player) sender;
-            if (args.length == 0) {
-                player.sendMessage(toColor("&FUnknown command, try using /help"));
-                return true;
-            }
-
-            if (args.length >= 1) {
-                if (!args[0].equalsIgnoreCase("help")) {
-                    player.sendMessage(toColor("&FUnknown command, try using  /help"));
-                    return true;
-                }
-            }
-
-
-
-            //checking if player var
-            if (player.hasPermission("gm.admin"))
-                if (player.hasPermission("gm.help")) {
-                    //do stuff if he doe
                     player.sendMessage(toColor("&2&LTropica &7» &7Help Menu"));
                     player.sendMessage("");
 
