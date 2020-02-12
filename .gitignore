@@ -2,3 +2,5 @@
 # JetBrains
 .idea/
 *.iml
+target/classes/me/
+target/generated-sources/

@@ -11,3 +11,8 @@ commands:
     usage: /<command>
     aliases:
       - helpme
+  broadcast:
+    description:
+    usage: /<command>
+    aliases:
+      - bc
