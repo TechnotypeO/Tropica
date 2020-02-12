@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-public class AbstractContainer {
+public abstract class AbstractContainer implements IStorage {
     private final static ExecutorService executor = Executors.newCachedThreadPool();
     private static AbstractContainer abstractContainer;
 
@@ -51,12 +51,13 @@ public class AbstractContainer {
 
     /**
      * A method which allows you to get certain data
-     * from the dedicated container/file.
+     * from the specified container/file.
      * Consumer has been used here to use the callback.
      *
-     * @param path the path for the object you need
-     * @param defaultObject default return value
-     * @param callback the consumer which the return value
+     * @param path The path for the object you need
+     * @param defaultObject The default return value.
+     * @param callback The consumer that will, once
+     *                 ready, accept the return value.
      */
     public void getAsync(String path, Object defaultObject, Consumer<Object> callback) {
         executor.execute(() -> callback.accept(this.getSync(path, defaultObject)));
