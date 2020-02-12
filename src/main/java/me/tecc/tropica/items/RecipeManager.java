@@ -10,6 +10,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,6 +21,17 @@ public class RecipeManager {
      * <b>Note</b>; creating recipes is not registering them.
      */
     private Map<String, Recipe> recipes;
+
+    /**
+     * Creates a new RecipeManager.
+     */
+    public RecipeManager() {
+        // set default instance values
+        this.recipes = new HashMap<>();
+    }
+
+
+    /*-------------------- CREATION OF RECIPES --------------------*/
 
     /**
      * Create a shaped recipe quickly.
@@ -90,6 +102,7 @@ public class RecipeManager {
     /**
      * Creates a shapeless recipe quickly.
      * It will still be modifiable after getting the result from this function.
+     *
      * @param name The name of the recipe.
      *             This is a crucial part, as the recipe needs a namespaced key
      *             to be able to be created.
@@ -98,8 +111,14 @@ public class RecipeManager {
      *               to be able to be created.
      * @param group The item group - if any exists.
      *              This is not a required parameter - only enter it if the
-     *              recipe is part of a collection of recipes.
+     *              recipe is part of a collection of recipes. <br>
+     *              From the Spigot documentation:
+     *                  "<i>Recipes with the same group may be grouped
+     *                  together when displayed in the client.</i>"
      * @param ingredients All items used in the recipe.
+     *                    This is a required parameter, as the recipe needs at
+     *                    least one ingredient to function as a shapeless
+     *                    recipe.
      * @return A recipe by the parameters entered.
      */
     public static ShapelessRecipe createShapelessRecipe(@NotNull String name, @NotNull ItemStack result, @Nullable String group, @NotNull ItemStack... ingredients) {
