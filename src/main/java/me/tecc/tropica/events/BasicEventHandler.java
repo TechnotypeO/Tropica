@@ -8,11 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class BasicEventHandler implements Listener {
     public BasicEventHandler() {
@@ -45,7 +45,7 @@ public class BasicEventHandler implements Listener {
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getInventory().getType().isCreatable()) {
 
-            @NotNull ItemStack[] contents = event.getInventory().getContents();
+            ItemStack[] contents = event.getInventory().getContents();
             boolean modified = false;
 
             for (int i = 0, contentsLength = contents.length; i < contentsLength; i++) {
@@ -64,6 +64,17 @@ public class BasicEventHandler implements Listener {
                 event.getInventory().setContents(contents);
             }
         }
+    }
+
+    @EventHandler
+    public void onInventoryMove(InventoryMoveItemEvent event) {
+        ItemStack itemStack = event.getItem();
+        if (NBTEditor.hasInteger(itemStack, "nonce")) {
+            return;
+        }
+
+        event.setItem(NBTEditor.addInteger(itemStack, "nonce", 1));
+        event.setCancelled(true);
     }
 
 
