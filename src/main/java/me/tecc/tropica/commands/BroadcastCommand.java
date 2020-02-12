@@ -1,4 +1,4 @@
-package me.funtodead.easybroadcast;
+package me.tecc.tropica.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BroadcastCommand implements CommandExecutor {
-
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -1,6 +1,6 @@
 package me.tecc.tropica;
 
-import me.funtodead.easybroadcast.BroadcastCommand;
+import me.tecc.tropica.commands.BroadcastCommand;
 import me.tecc.tropica.commands.HelpCommand;
 import me.tecc.tropica.events.BasicEventHandler;
 import me.tecc.tropica.features.collection.CollectionManager;
