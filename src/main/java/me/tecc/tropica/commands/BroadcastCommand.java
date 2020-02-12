@@ -20,7 +20,8 @@ public class BroadcastCommand implements CommandExecutor {
                     if (message != "") message += " ";
                     message += part;
                 }
-                Bukkit.getServer().broadcastMessage(toColor("&2&lTropica &7» &e") + message);
+                Bukkit.getServer().broadcastMessage(toColor("&2&lTropica &7» &e" + message));
+
             }
 
         }
