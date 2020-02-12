@@ -7,10 +7,10 @@ description: Tropica is an open source survival plugin
 website: https://tecc.me/projects/tropica/
 commands:
   help:
-    description:
-    usage: /<command>
-    aliases:
-      - helpme
+  description:
+  usage: /<command>
+  aliases:
+    - helpme
   Broadcast:
     description:
     usage: /<command>
