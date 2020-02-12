@@ -6,6 +6,7 @@ import me.tecc.tropica.events.BasicEventHandler;
 import me.tecc.tropica.features.collection.CollectionManager;
 import me.tecc.tropica.storage.CollectionContainer;
 import me.tecc.tropica.storage.PublicContainer;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Tropica extends JavaPlugin {
@@ -44,5 +45,13 @@ public final class Tropica extends JavaPlugin {
      */
     public static Tropica getTropica() {
         return Tropica.getPlugin(Tropica.class);
+    }
+
+    /**
+     * Registers a listener to the Tropica plugin.
+     * @param listener
+     */
+    public static void registerListener(Listener listener) {
+        getTropica().getServer().getPluginManager().registerEvents(listener, getTropica());
     }
 }
