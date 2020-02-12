@@ -1,5 +1,5 @@
 name: Tropica
-version: ${project.version}
+version: 1.0-SNAPSHOT
 main: me.tecc.tropica.Tropica
 api-version: 1.13
 authors: [Technotype, MarcusSlover, funtodead]
