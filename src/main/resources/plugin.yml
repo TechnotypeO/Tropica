@@ -13,3 +13,7 @@ commands:
   broadcast:
     aliases:
       - bc
+  collection:
+    aliases:
+      - items
+      - collect
