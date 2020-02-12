@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-public class AbstractContainer {
+public abstract class AbstractContainer {
     private final static ExecutorService executor = Executors.newCachedThreadPool();
     private static AbstractContainer abstractContainer;
 
