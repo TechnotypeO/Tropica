@@ -87,12 +87,13 @@ public abstract class AbstractContainer implements IStorage {
      *                 saving. So, if you want to inform a player in chat
      *                 that something was saved then you can use this!
      */
-    private void setAsync(String path, Object value, Consumer<Boolean> consumer) {
+    public void setAsync(String path, Object value, Consumer<Boolean> consumer) {
         executor.execute(() -> {
             this.config.set(path, value);
+            boolean save = this.save();
 
             if (consumer != null) {
-                consumer.accept(this.save());
+                consumer.accept(save);
             }
         });
     }
