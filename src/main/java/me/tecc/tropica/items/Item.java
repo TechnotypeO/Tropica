@@ -16,7 +16,7 @@ import org.bukkit.material.MaterialData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Item implements Cloneable  {
+public class Item implements Cloneable {
     private ItemStack itemStack;
 
     public Item(Material material, int amount) {

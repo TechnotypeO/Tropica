@@ -1,20 +1,19 @@
 package me.tecc.tropica.items;
 
+import me.tecc.tropica.management.IManager;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.jetbrains.annotations.NotNull;
 import me.tecc.tropica.TUtil;
-import me.tecc.tropica.Tropica;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-public class RecipeManager {
+public class RecipeManager implements IManager<Recipe> {
     /**
      * All the recipes ever registered.
      * <br>
@@ -148,5 +147,20 @@ public class RecipeManager {
 
         // return final recipe
         return recipe;
+    }
+
+    @Override
+    public void register(Recipe recipe) {
+
+    }
+
+    @Override
+    public void unregister(Recipe recipe) {
+
+    }
+
+    @Override
+    public List<Recipe> getRegistrants() {
+        return null;
     }
 }

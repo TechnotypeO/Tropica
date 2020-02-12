@@ -2,6 +2,7 @@ package me.tecc.tropica.events;
 
 import me.tecc.tropica.Tropica;
 import me.tecc.tropica.exceptions.MethodNotFoundException;
+import me.tecc.tropica.management.EventHandlerManager;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +25,7 @@ public class AbstractEventHandler implements Listener {
         this.supportedEvents = Arrays.asList(supportedEvents);
 
         // register listener
-        Tropica.registerListener(this);
+        EventHandlerManager.getInstance().register(this);
     }
 
     /**

@@ -1,14 +1,36 @@
 package me.tecc.tropica.management;
 
-public class Supervisor extends AbstractManager<AbstractManager<?>> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Supervisor implements IManager<IManager<?>> {
+    private static final Supervisor instance = new Supervisor();
+
+    public Supervisor() {
+    }
+
+    /**
+     * The
+     */
+    private ArrayList<IManager<?>> registeredManagers = new ArrayList<>();
+
 
     @Override
-    public void register(AbstractManager<?> abstractManager) {
+    public void register(IManager<?> manager) {
 
     }
 
     @Override
-    public void unregister(AbstractManager<?> abstractManager) {
+    public void unregister(IManager<?> manager) {
 
+    }
+
+    @Override
+    public List<IManager<?>> getRegistrants() {
+        return registeredManagers;
+    }
+
+    public static Supervisor getInstance() {
+        return instance;
     }
 }
