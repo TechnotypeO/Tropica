@@ -24,7 +24,7 @@ public class HelpCommand implements CommandExecutor {
             /*Ignore the GM stuff, we will change it soon, ~ funtodead  //Also If you see this Please remove the permission requirement from this command. and also the else
 
             /*1 */
-            net.md_5.bungee.api.chat.TextComponent one = new TextComponent(toColor("&e1&f. /Claim &f- &7Claim a land. (&fHover to type)."));
+            net.md_5.bungee.api.chat.TextComponent one = new TextComponent(toColor("&e1&f. /claim &f- &7Claim a land. &f(Hover to type)"));
             one.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(toColor("&b&lClick to type in chat &7(/Claim)")).create()));
             one.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/claim"));
             player.spigot().sendMessage(one);
