@@ -64,7 +64,7 @@ public class BasicEventHandler implements Listener {
                         content = NBTEditor.addInteger(content, "nonce", 1);
                         contents[i] = content;
 
-                        if (custom) {
+                        if (!custom) {
                             CollectionManager.getInstance().handleEvent((Player) event.getPlayer(), contents[i]);
                         }
                         modified = true;
