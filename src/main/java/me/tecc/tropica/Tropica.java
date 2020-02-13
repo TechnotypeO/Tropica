@@ -49,7 +49,7 @@ public final class Tropica extends JavaPlugin {
 
     /**
      * Registers a listener to the Tropica plugin.
-     * @param listener
+     * @param listener The listener to register
      */
     public static void registerListener(Listener listener) {
         getTropica().getServer().getPluginManager().registerEvents(listener, getTropica());

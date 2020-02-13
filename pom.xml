@@ -65,15 +65,8 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>lib</id>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <url>file://${project.basedir}/libs</url>
+            <id>local</id>
+            <url>file://${user.home}/.m2/repository</url>
         </repository>
     </repositories>
 
@@ -84,11 +77,12 @@
             <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>server</artifactId>
+        <dependency>
+            <groupId>org.spigotmc.server</groupId>
+            <artifactId>spigot-server</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
-        </dependency>-->
+        </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
