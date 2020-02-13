@@ -166,11 +166,18 @@ public class CollectionManager {
                     @Override
                     public void accept(Object o) {
                         final MemorySection memorySection;
-                        final Map<String, Double> map = new HashMap<>();
+                        final Map<String, Double> map;
 
                         if (o != null) {
-                            memorySection = (MemorySection) o;
-                            memorySection.getValues(false).forEach((key, value) -> map.put(key, (double) value));
+                            if (o instanceof HashMap) {
+                                map = (Map<String, Double>) o;
+                            } else {
+                                map = new HashMap<>();
+                                memorySection = (MemorySection) o;
+                                memorySection.getValues(false).forEach((key, value) -> map.put(key, (double) value));
+                            }
+                        } else {
+                            map = new HashMap<>();
                         }
 
                         // the amount of collection
