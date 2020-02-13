@@ -1,11 +1,15 @@
 package me.tecc.tropica.storage;
 
+import me.tecc.tropica.Tropica;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -16,6 +20,8 @@ public abstract class AbstractContainer implements IStorage {
     private Plugin plugin;
     private File file;
     public FileConfiguration config;
+    private static int saving = 0;
+    private static BukkitRunnable bukkitRunnable = null;
 
     public AbstractContainer(Plugin plugin, String filename) {
 
@@ -61,6 +67,12 @@ public abstract class AbstractContainer implements IStorage {
         executor.execute(() -> callback.accept(this.getSync(path, defaultObject)));
     }
 
+    public Object getAsync(String path, Object defaultObject) throws ExecutionException, InterruptedException {
+        // create CompletableFuture for getting it asynchronously using getSync method
+        CompletableFuture<Object> future = CompletableFuture.supplyAsync(() -> this.getSync(path, defaultObject));
+        return future.get();
+    }
+
     /**
      * A method which passes the data from config at a
      * certain path next to the getAsync method.
@@ -90,10 +102,26 @@ public abstract class AbstractContainer implements IStorage {
     public void setAsync(String path, Object value, Consumer<Boolean> consumer) {
         executor.execute(() -> {
             this.config.set(path, value);
-            boolean save = this.save();
+            saving = 3;
 
-            if (consumer != null) {
-                consumer.accept(save);
+            if (bukkitRunnable == null) {
+                bukkitRunnable = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        saving -= 1;
+                        if (saving <= 0) {
+                            boolean save = save();
+
+                            if (consumer != null) {
+                                consumer.accept(save);
+                            }
+                            this.cancel();
+                            bukkitRunnable = null;
+                        }
+                    }
+                };
+
+                bukkitRunnable.runTaskTimer(Tropica.getTropica(), 0, 20L);
             }
         });
     }

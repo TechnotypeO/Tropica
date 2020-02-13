@@ -3,8 +3,11 @@ package me.tecc.tropica;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class TUtil {
     /**
@@ -57,5 +60,57 @@ public class TUtil {
             strings[i] = ss;
         }
         return strings;
+    }
+
+    /**
+     * Transforms a number into fancy cost.
+     * Example: 1000 --> 1,000
+     * @param num The number to transform into fancy cost.
+     * @return a {@link String} of the number (in fancy cost)
+     */
+    public static String toFancyCost(int num) {
+        return NumberFormat.getInstance(Locale.US).format((Integer) num);
+    }
+
+    /**
+     * Transforms a double into fancy cost.
+     * Example 50000.2 --> 50,000.2
+     * @param num The double to transform into fancy cost.
+     * @return a {@link String} of the double (in fancy cost)
+     */
+    public static String toFancyCost(double num) {
+        return NumberFormat.getInstance(Locale.US).format(num);
+    }
+
+    /**
+     * Translates a fancy-cost number (as a String) to Integer.
+     * @param num The string to translate into Integer.
+     * @return {@link Integer}
+     */
+    public static Integer fromFancyCost(String num) {
+        NumberFormat format = NumberFormat.getInstance(Locale.US);
+        Number number = 0;
+        try {
+            number = format.parse(num);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return number.intValue();
+    }
+
+    /**
+     * Translates a fancy-cost double (as a String) to Double.
+     * @param num The string to translate into Double.
+     * @return {@link Double}
+     */
+    public static double fromFancyCostDouble(String num) {
+        NumberFormat format = NumberFormat.getInstance(Locale.US);
+        Number number = 0.0D;
+        try {
+            number = format.parse(num);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return number.doubleValue();
     }
 }

@@ -14,7 +14,7 @@ public class Menu {
     private final String name;
     private final Inventory inventory;
 
-    public static List<String> names = Arrays.asList("Collection Menu");
+    public static List<String> names = Arrays.asList("Collection Menu", "Tropica Menu");
 
     public Menu(int size, String name) {
         this.size = size;

@@ -2,23 +2,28 @@ package me.tecc.tropica.features.collection;
 
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
+import me.tecc.tropica.features.TropicaMenu;
 import me.tecc.tropica.items.Item;
+import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;
+import me.tecc.tropica.storage.CollectionContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Consumer;
 
 
 /**
@@ -116,16 +121,89 @@ public class CollectionFeature implements CommandExecutor, Listener {
     private void openMenuCollection(Player player, boolean sound, Material material) {
         Menu menu = new Menu(6*9, "Collection Menu");
 
-        // creating fancy item
-        Item item = new Item(material);
+        // getting basic data
+        final UUID uuid = player.getUniqueId();
+        final String path = uuid.toString();
 
-        // collection preview item
-        menu.setSlot(21, item);
+        CollectionContainer.getInstance().getAsync(path, null, new Consumer<Object>() {
+            @Override
+            public void accept(Object o) {
+                final MemorySection memorySection;
+                final Map<String, Double> map;
 
-        // leaderboard item
-        menu.setSlot(23, new Item(Material.OAK_SIGN));
+                if (o != null) {
+                    if (o instanceof HashMap) {
+                        map = (Map<String, Double>) o;
+                    } else {
+                        map = new HashMap<>();
+                        memorySection = (MemorySection) o;
+                        memorySection.getValues(false).forEach((key, value) -> map.put(key, (double) value));
+                    }
+                } else {
+                    map = new HashMap<>();
+                }
 
-        menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));
+                // getting the amount
+                double collection = map.getOrDefault(material.toString(), 0D);
+
+                if (collection > 0) {
+                    // getting the original name of item
+                    net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
+                    String originalName = itemStack1.getItem().g(itemStack1).getLegacyString();
+
+                    // creating fancy item
+                    Item item = new Item(material, 1, "&e"+originalName,
+                            "&9Information!",
+                            "&7You're currently viewing",
+                            "&7a singular collection.",
+                            "",
+                            "&7Your collection:",
+                            "&8■ &a"+TUtil.toFancyCost(Math.ceil(collection)) + " &7&oof "+ originalName
+                    );
+
+                    // finally setting the item
+                    menu.setSlot(21, item);
+
+                    // loading leaderboard item
+                    menu.setSlot(23, new Item(Material.OAK_SIGN, 1, "&bLeaderboard", "&7&oLoading..."));
+
+                    CollectionManager.getInstance().getAsyncLeaderboard(material, new Consumer<CollectionLeaderboard>(){
+
+                        @Override
+                        public void accept(CollectionLeaderboard collectionLeaderboard) {
+                            // leaderboard item
+                            Map<UUID, Integer> places = collectionLeaderboard.getPlaces();
+
+                            List<String> lore = new ArrayList<>(collectionLeaderboard.getItemLore());
+                            lore.add("");
+                            lore.add("&7Your position:");
+                            lore.add("&8■ &3"+TUtil.toFancyCost(places.getOrDefault(player.getUniqueId(), places.size())) + "# &7&oout of "
+                                    +TUtil.toFancyCost(places.size()));
+
+                            menu.setSlot(23, new Item(Material.OAK_SIGN, 1, "&bLeaderboard")
+                                    .setLore(lore)
+                                    .addEnchantment(Enchantment.ARROW_INFINITE, 1)
+                                    .setHideflags(true)
+                            );
+                        }
+                    });
+
+
+                } else {
+                    // unknown collection
+                    menu.setSlot(21, new Item(Material.BARRIER, 1, "&c???",
+                            "&9Information!",
+                            "&7This item wasn't unlocked yet.",
+                            "&7",
+                            "&cLocked!"));
+                }
+            }
+        });
+
+        Item goBack = new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back");
+        goBack.setItemStack(NBTEditor.addString(goBack.getItemStack(), "collection_viewer", "true"));
+        menu.setSlot(49, goBack);
+
         menu.open(player, sound);
     }
 
@@ -152,8 +230,62 @@ public class CollectionFeature implements CommandExecutor, Listener {
                 if (material == null) { // and again another check
                     continue;
                 }
-                // finally setting the item
-                menu.setSlot(i, new Item(material, 1, material.toString()));
+
+                // getting basic data
+                final UUID uuid = player.getUniqueId();
+                final String path = uuid.toString();
+
+                int finalI = i;
+                CollectionContainer.getInstance().getAsync(path, null, new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        final MemorySection memorySection;
+                        final Map<String, Double> map;
+
+                        if (o != null) {
+                            if (o instanceof HashMap) {
+                                map = (Map<String, Double>) o;
+                            } else {
+                                map = new HashMap<>();
+                                memorySection = (MemorySection) o;
+                                memorySection.getValues(false).forEach((key, value) -> map.put(key, (double) value));
+                            }
+                        } else {
+                            map = new HashMap<>();
+                        }
+
+                        // getting the amount
+                        double collection = map.getOrDefault(material.toString(), 0D);
+
+                        if (collection > 0) {
+                            // getting the original name of item
+                            net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
+                            String originalName = itemStack1.getItem().g(itemStack1).getLegacyString();
+
+                            // preparing item
+                            Item item = new Item(material, 1, "&e"+originalName,
+                                    "&9Information!",
+                                    "&7This item was unlocked.",
+                                    "",
+                                    "&7Your collection:",
+                                    "&8■ &a"+TUtil.toFancyCost(Math.ceil(collection)) + " &7&oof "+ originalName,
+                                    "",
+                                    "&eClick to view!"
+                            );
+
+                            // finally setting the item
+                            menu.setSlot(finalI, item);
+
+                        } else {
+                            // unknown collection
+                            menu.setSlot(finalI, new Item(Material.BARRIER, 1, "&c???",
+                                    "&9Information!",
+                                    "&7This item wasn't unlocked yet.",
+                                    "&7",
+                                    "&cLocked!"));
+                        }
+                    }
+                });
             }
         }
 
@@ -162,6 +294,11 @@ public class CollectionFeature implements CommandExecutor, Listener {
             menu.setSlot(47, new Item(Material.BLUE_STAINED_GLASS_PANE, 1, "&bPrevious Page"));
         }
         menu.setSlot(51, new Item(Material.BLUE_STAINED_GLASS_PANE, 1, "&bNext Page"));
+
+        Item goBack = new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back");
+        goBack.setItemStack(NBTEditor.addString(goBack.getItemStack(), "all_collections", "true"));
+        menu.setSlot(49, goBack);
+
         menu.open(player, sound);
     }
 
@@ -178,6 +315,10 @@ public class CollectionFeature implements CommandExecutor, Listener {
             Player player = (Player) event.getWhoClicked();
             Item item = new Item(event.getCurrentItem());
 
+            if (item.getItemStack() == null || item.getType() == Material.AIR) {
+                return;
+            }
+
             // item checks
             if (item.getName().equalsIgnoreCase(TUtil.toColor("&bNext Page"))) {
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
@@ -192,6 +333,23 @@ public class CollectionFeature implements CommandExecutor, Listener {
 
                 pages.put(player.getUniqueId(), pages.getOrDefault(player.getUniqueId(), 0) - 1);
                 openMenu(player, false);
+                return;
+            }
+
+            if (item.getLore().contains(TUtil.toColor("&eClick to view!"))) {
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                openMenuCollection(player, false, item.getMaterial());
+                return;
+            }
+
+            if (item.getName().equals(TUtil.toColor("&cGo Back"))) {
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                if (NBTEditor.hasString(item.getItemStack(), "collection_viewer")) {
+                    openMenu(player, false);
+                }
+                if (NBTEditor.hasString(item.getItemStack(), "all_collections")) {
+                    TropicaMenu.getInstance().openTropicaMenu(player, false);
+                }
             }
         }
     }

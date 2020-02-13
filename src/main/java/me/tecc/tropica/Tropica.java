@@ -3,6 +3,7 @@ package me.tecc.tropica;
 import me.tecc.tropica.commands.BroadcastCommand;
 import me.tecc.tropica.commands.HelpCommand;
 import me.tecc.tropica.events.BasicEventHandler;
+import me.tecc.tropica.features.TropicaMenu;
 import me.tecc.tropica.features.collection.CollectionManager;
 import me.tecc.tropica.storage.CollectionContainer;
 import me.tecc.tropica.storage.PublicContainer;
@@ -26,6 +27,7 @@ public final class Tropica extends JavaPlugin {
 
         // initialize listeners
         new BasicEventHandler();
+        new TropicaMenu();
 
        //Commands <-
         getCommand("broadcast").setExecutor(new BroadcastCommand());
