@@ -177,7 +177,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
                             List<String> lore = new ArrayList<>(collectionLeaderboard.getItemLore());
                             lore.add("");
                             lore.add("&7Your position:");
-                            lore.add("&8■ &3"+TUtil.toFancyCost(places.getOrDefault(player.getUniqueId(), places.size())) + "# &7&oout of "
+                            lore.add("&8■ &3#"+TUtil.toFancyCost(places.getOrDefault(player.getUniqueId(), places.size())) + " &7&oout of "
                                     +TUtil.toFancyCost(places.size()));
 
                             menu.setSlot(23, new Item(Material.OAK_SIGN, 1, "&bLeaderboard")
