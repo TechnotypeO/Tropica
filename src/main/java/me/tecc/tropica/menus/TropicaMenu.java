@@ -1,9 +1,8 @@
-package me.tecc.tropica.features;
+package me.tecc.tropica.menus;
 
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
 import me.tecc.tropica.items.Item;
-import me.tecc.tropica.menus.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;

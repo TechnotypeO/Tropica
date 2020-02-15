@@ -2,7 +2,7 @@ package me.tecc.tropica.features.collection;
 
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
-import me.tecc.tropica.features.TropicaMenu;
+import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;

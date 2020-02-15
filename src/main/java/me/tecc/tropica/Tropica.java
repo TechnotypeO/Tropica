@@ -3,7 +3,7 @@ package me.tecc.tropica;
 import me.tecc.tropica.commands.BroadcastCommand;
 import me.tecc.tropica.commands.HelpCommand;
 import me.tecc.tropica.events.BasicEventHandler;
-import me.tecc.tropica.features.TropicaMenu;
+import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.features.collection.CollectionManager;
 import me.tecc.tropica.storage.CollectionContainer;
 import me.tecc.tropica.storage.PublicContainer;
