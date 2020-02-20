@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,16 +37,12 @@ public class TUtil {
     }
 
     /**
-     * Same as toColor(String) method, but for a string list.
+     * Same as toColor(String[]) method, but for a string list.
      * @param s String list
-     * @return {@link List <String>}, translated to Minecraft valid colored text.
+     * @return {@link List<String>}, translated to Minecraft valid colored text.
      */
     public static List<String> toColor(List<String> s) {
-        List<String> strings = new ArrayList<>();
-        for (String ss : s) {
-            strings.add(toColor(ss));
-        }
-        return strings;
+        return Arrays.asList(toColor((String[]) s.toArray()));
     }
 
     /**
@@ -54,12 +51,11 @@ public class TUtil {
      * @return {@link String[]}, translated to Minecraft valid colored text.
      */
     public static String[] toColor(String[] s) {
-        String[] strings = new String[s.length];
         for (int i = 0; i < s.length; i++) {
-            String ss = s[i];
-            strings[i] = ss;
+            String si = s[i];
+            s[i] = toColor(si);
         }
-        return strings;
+        return s;
     }
 
     /**
