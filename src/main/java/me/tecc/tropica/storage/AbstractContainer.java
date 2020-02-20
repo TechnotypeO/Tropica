@@ -54,6 +54,31 @@ public abstract class AbstractContainer implements IStorage {
     }
 
     /**
+     * A method which saves the file asynchronously.
+     * @return true/false (successfully saved or not)
+     */
+    public boolean saveAsync() {
+        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
+            try {
+                config.save(file);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        });
+
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
      * A method which allows you to get certain data
      * from the specified container/file.
      * Consumer has been used here to use the callback.

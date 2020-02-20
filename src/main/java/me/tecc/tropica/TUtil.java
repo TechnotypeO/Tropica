@@ -3,9 +3,12 @@ package me.tecc.tropica;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,16 +39,12 @@ public class TUtil {
     }
 
     /**
-     * Same as toColor(String) method, but for a string list.
+     * Same as toColor(String[]) method, but for a string list.
      * @param s String list
-     * @return {@link List <String>}, translated to Minecraft valid colored text.
+     * @return {@link List<String>}, translated to Minecraft valid colored text.
      */
     public static List<String> toColor(List<String> s) {
-        List<String> strings = new ArrayList<>();
-        for (String ss : s) {
-            strings.add(toColor(ss));
-        }
-        return strings;
+        return Arrays.asList(toColor((String[]) s.toArray()));
     }
 
     /**
@@ -54,22 +53,21 @@ public class TUtil {
      * @return {@link String[]}, translated to Minecraft valid colored text.
      */
     public static String[] toColor(String[] s) {
-        String[] strings = new String[s.length];
         for (int i = 0; i < s.length; i++) {
-            String ss = s[i];
-            strings[i] = ss;
+            String si = s[i];
+            s[i] = toColor(si);
         }
-        return strings;
+        return s;
     }
 
     /**
      * Transforms a number into fancy cost.
      * Example: 1000 --> 1,000
-     * @param num The number to transform into fancy cost.
-     * @return a {@link String} of the number (in fancy cost)
+     * @param num The number to transform into a fancy number.
+     * @return a {@link String} of the fancy number.
      */
-    public static String toFancyCost(int num) {
-        return NumberFormat.getInstance(Locale.US).format((Integer) num);
+    public static String toFancyNumber(long num) {
+        return NumberFormat.getInstance(Locale.US).format(num);
     }
 
     /**
@@ -78,7 +76,7 @@ public class TUtil {
      * @param num The double to transform into fancy cost.
      * @return a {@link String} of the double (in fancy cost)
      */
-    public static String toFancyCost(double num) {
+    public static String toFancyDouble(double num) {
         return NumberFormat.getInstance(Locale.US).format(num);
     }
 
@@ -87,7 +85,7 @@ public class TUtil {
      * @param num The string to translate into Integer.
      * @return {@link Integer}
      */
-    public static Integer fromFancyCost(String num) {
+    public static long fromFancyNumber(String num) {
         NumberFormat format = NumberFormat.getInstance(Locale.US);
         Number number = 0;
         try {
@@ -95,7 +93,7 @@ public class TUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return number.intValue();
+        return number.longValue();
     }
 
     /**
@@ -103,7 +101,7 @@ public class TUtil {
      * @param num The string to translate into Double.
      * @return {@link Double}
      */
-    public static double fromFancyCostDouble(String num) {
+    public static double fromFancyDouble(String num) {
         NumberFormat format = NumberFormat.getInstance(Locale.US);
         Number number = 0.0D;
         try {
@@ -112,5 +110,15 @@ public class TUtil {
             e.printStackTrace();
         }
         return number.doubleValue();
+    }
+
+    /**
+     * Gets a file from the plugin resource directory ({@code ~/plugins/Tropica/}).
+     */
+    public static File getFileFromPluginDir(String fileName) {
+        // get tropica plugin data folder
+        File path = Tropica.getTropica().getDataFolder();
+        // resolve file using the File(File, String) constructor
+        return new File(path, fileName);
     }
 }

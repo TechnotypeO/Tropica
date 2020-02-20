@@ -158,7 +158,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
                             "&7a singular collection.",
                             "",
                             "&7Your collection:",
-                            "&8■ &a"+TUtil.toFancyCost(Math.ceil(collection)) + " &7&oof "+ originalName
+                            "&8■ &a" + TUtil.toFancyNumber((long) Math.ceil(collection)) + " &7&oof " + originalName
                     );
 
                     // finally setting the item
@@ -177,8 +177,8 @@ public class CollectionFeature implements CommandExecutor, Listener {
                             List<String> lore = new ArrayList<>(collectionLeaderboard.getItemLore());
                             lore.add("");
                             lore.add("&7Your position:");
-                            lore.add("&8■ &3#"+TUtil.toFancyCost(places.getOrDefault(player.getUniqueId(), places.size())) + " &7&oout of "
-                                    +TUtil.toFancyCost(places.size()));
+                            lore.add("&8■ &3#"+TUtil.toFancyNumber(places.getOrDefault(player.getUniqueId(), places.size())) + " &7&oout of "
+                                    + TUtil.toFancyNumber(places.size()));
 
                             menu.setSlot(23, new Item(Material.OAK_SIGN, 1, "&bLeaderboard")
                                     .setLore(lore)
@@ -268,7 +268,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
                                     "&7This item was unlocked.",
                                     "",
                                     "&7Your collection:",
-                                    "&8■ &a"+TUtil.toFancyCost(Math.ceil(collection)) + " &7&oof "+ originalName,
+                                    "&8■ &a"+TUtil.toFancyNumber((long) Math.ceil(collection)) + " &7&oof "+ originalName,
                                     "",
                                     "&eClick to view!"
                             );
