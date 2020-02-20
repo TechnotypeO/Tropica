@@ -65,11 +65,11 @@ public class TUtil {
     /**
      * Transforms a number into fancy cost.
      * Example: 1000 --> 1,000
-     * @param num The number to transform into fancy cost.
-     * @return a {@link String} of the number (in fancy cost)
+     * @param num The number to transform into a fancy number.
+     * @return a {@link String} of the fancy number.
      */
-    public static String toFancyCost(int num) {
-        return NumberFormat.getInstance(Locale.US).format((Integer) num);
+    public static String toFancyNumber(long num) {
+        return NumberFormat.getInstance(Locale.US).format(num);
     }
 
     /**
@@ -78,7 +78,7 @@ public class TUtil {
      * @param num The double to transform into fancy cost.
      * @return a {@link String} of the double (in fancy cost)
      */
-    public static String toFancyCost(double num) {
+    public static String toFancyDouble(double num) {
         return NumberFormat.getInstance(Locale.US).format(num);
     }
 
@@ -87,7 +87,7 @@ public class TUtil {
      * @param num The string to translate into Integer.
      * @return {@link Integer}
      */
-    public static Integer fromFancyCost(String num) {
+    public static long fromFancyNumber(String num) {
         NumberFormat format = NumberFormat.getInstance(Locale.US);
         Number number = 0;
         try {
@@ -95,7 +95,7 @@ public class TUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return number.intValue();
+        return number.longValue();
     }
 
     /**
@@ -103,7 +103,7 @@ public class TUtil {
      * @param num The string to translate into Double.
      * @return {@link Double}
      */
-    public static double fromFancyCostDouble(String num) {
+    public static double fromFancyDouble(String num) {
         NumberFormat format = NumberFormat.getInstance(Locale.US);
         Number number = 0.0D;
         try {
