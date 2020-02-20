@@ -3,6 +3,8 @@ package me.tecc.tropica;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -108,5 +110,15 @@ public class TUtil {
             e.printStackTrace();
         }
         return number.doubleValue();
+    }
+
+    /**
+     * Gets a file from the plugin resource directory ({@code ~/plugins/Tropica/}).
+     */
+    public static File getFileFromPluginDir(String fileName) {
+        // get tropica plugin data folder
+        File path = Tropica.getTropica().getDataFolder();
+        // resolve file using the File(File, String) constructor
+        return new File(path, fileName);
     }
 }
