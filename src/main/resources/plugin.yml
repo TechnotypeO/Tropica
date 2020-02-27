@@ -3,8 +3,8 @@ version: ${project.version}
 main: me.tecc.tropica.Tropica
 api-version: 1.13
 authors: [Technotype, MarcusSlover, funtodead]
-description: 'Tropica is an open source survival plugin'
-website: https://tecc.me/projects/tropica/
+description: 'Tropica is custom sloverteam survival plugin which will not be public to all github users.'
+website: 'https://tecc.me/projects/tropica/'
 
 commands:
   help:
