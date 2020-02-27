@@ -8,7 +8,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,7 +44,11 @@ public class TUtil {
      * @return {@link List<String>}, translated to Minecraft valid colored text.
      */
     public static List<String> toColor(List<String> s) {
-        return Arrays.asList(toColor((String[]) s.toArray()));
+        List<String> strings = new ArrayList<>();
+        for (String ss : s) {
+            strings.add(toColor(ss));
+        }
+        return strings;
     }
 
     /**
