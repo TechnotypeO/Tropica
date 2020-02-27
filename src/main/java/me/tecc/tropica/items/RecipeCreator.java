@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecipeManager implements IManager<Recipe> {
+public class RecipeCreator {
     /**
-     * All the recipes ever registered.
+     * All the recipes ever created.
      * <br>
      * <b>Note</b>; creating recipes is not registering them.
      */
@@ -24,7 +24,7 @@ public class RecipeManager implements IManager<Recipe> {
     /**
      * Creates a new RecipeManager.
      */
-    public RecipeManager() {
+    public RecipeCreator() {
         // set default instance values
         this.recipes = new HashMap<>();
     }
@@ -147,20 +147,5 @@ public class RecipeManager implements IManager<Recipe> {
 
         // return final recipe
         return recipe;
-    }
-
-    @Override
-    public void register(Recipe recipe) {
-
-    }
-
-    @Override
-    public void unregister(Recipe recipe) {
-
-    }
-
-    @Override
-    public List<Recipe> getRegistrants() {
-        return null;
     }
 }
