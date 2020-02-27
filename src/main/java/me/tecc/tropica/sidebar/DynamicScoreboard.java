@@ -118,7 +118,9 @@ public class DynamicScoreboard {
                 }
 
                 for (final Player player1 : Bukkit.getOnlinePlayers()) {
-                    team.addEntry(player1.getName());
+                    if (player1.hasPermission("slover.rank."+rankObject.getName())) {
+                        team.addEntry(player1.getName());
+                    }
                 }
                 i++;
             }

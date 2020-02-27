@@ -4,19 +4,24 @@ import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
 import me.tecc.tropica.features.collection.CollectionManager;
 import me.tecc.tropica.features.playerData.PlayerFeature;
+import me.tecc.tropica.features.playerData.PlayerWrapper;
 import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;
 import me.tecc.tropica.sidebar.DynamicScoreboard;
 import me.tecc.tropica.sidebar.Sidebar;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -46,8 +51,15 @@ public class BasicEventHandler implements Listener {
 
         new PlayerFeature(player);
 
-        Sidebar.sidebar(player);
-        DynamicScoreboard.updateTeamScoreboard();
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                Sidebar.sidebar(player);
+                DynamicScoreboard.updateTeamScoreboard();
+            }
+        }.runTaskLater(Tropica.getTropica(), 20*2L);
+
     }
 
     @EventHandler
@@ -168,5 +180,30 @@ public class BasicEventHandler implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler
+    public void onAchievement(PlayerAdvancementDoneEvent e) {
+        Player player = e.getPlayer();
+        String name = e.getAdvancement().getKey().getKey().split("/")[1].replaceAll("_","");
+        name = WordUtils.capitalizeFully(name);
+
+        // fancy message and sounds
+        TextComponent textComponent = new TextComponent(TUtil.toColor(
+                "\n&r &r &r &r &r &a&l◆ &2&lADVANCEMENT DONE &a&l◆\n"+
+                        "&r &r &r&7You've completed &f&n"+name+"\n"+
+                        "&r &r &r&7Your reward: &b+10 Knowledge Point"+
+                        "\n"
+        ));
+
+        player.spigot().sendMessage(textComponent);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 1.5f);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.25f);
+
+        PlayerWrapper playerWrapper = new PlayerWrapper(player);
+        int knowledge = playerWrapper.getInt("knowledge") + 10;
+        playerWrapper.setInt("knowledge", knowledge);
+
+        Sidebar.updateKnowledge(playerWrapper, 10);
     }
 }
