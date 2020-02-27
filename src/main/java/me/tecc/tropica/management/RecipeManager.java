@@ -8,16 +8,18 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class RecipeManager implements IManager<Recipe> {
+public class RecipeManager implements IManager<Recipe>, IHasDefaultRegistrants {
     /**
      * All the recipes that has been registered.
      */
     private Map<String, Recipe> recipes;
+
+    /**
+     * Whether or not default registrants have been registered.
+     */
+    private boolean hasRegisteredDefaults;
 
     /**
      * Creates a new RecipeManager.
@@ -47,5 +49,24 @@ public class RecipeManager implements IManager<Recipe> {
         if (result.hasItemMeta() && Objects.requireNonNull(result.getItemMeta()).hasLocalizedName())
             return result.getItemMeta().getLocalizedName();
         else return "minecraft:" + result.getType().toString().toLowerCase();
+    }
+
+    @Override
+    public void registerDefaults() {
+        @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
+        List<Recipe> recipes = Arrays.asList(
+                // put recipes here
+        );
+
+        for (Recipe recipe : recipes)
+            this.register(recipe);
+
+        // keep this line the last
+        this.hasRegisteredDefaults = true;
+    }
+
+    @Override
+    public boolean hasRegisteredDefaults() {
+        return this.hasRegisteredDefaults;
     }
 }
