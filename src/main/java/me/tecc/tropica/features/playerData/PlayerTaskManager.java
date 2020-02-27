@@ -38,14 +38,14 @@ public class PlayerTaskManager extends BukkitRunnable {
             Player player = c.getPlayer();
             UUID uuid = player.getUniqueId();
 
-            String toBeSaved = c.getJsonObject().getAsString();
+            String toBeSaved = c.getJsonObject().toString();
             PlayerContainer.getInstance().setAsync(uuid.toString(), toBeSaved, aBoolean -> {
                 if (aBoolean) {
                     long difference = System.currentTimeMillis() - data;
-                    int seconds = (int) (difference / 1000);
+                    long seconds = (difference / 1000);
 
                     TextComponent textComponent = new TextComponent(
-                            TUtil.toColor("&aSaved your data in &f"+seconds+"s&a!"));
+                            TUtil.toColor("&aSaved your data in &f"+(Math.ceil((double)seconds))+"s&a!"));
 
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, textComponent);
                 }

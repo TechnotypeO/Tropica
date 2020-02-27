@@ -5,6 +5,8 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
+import me.tecc.tropica.features.playerData.PlayerWrapper;
+import me.tecc.tropica.sidebar.Sidebar;
 import me.tecc.tropica.storage.CollectionContainer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -189,7 +191,8 @@ public class CollectionManager {
                             TextComponent textComponent = new TextComponent(TUtil.toColor(
                                     "\n&r &r &r &r &r &a&l◆ &2&lNEW COLLECTION UNLOCKED &a&l◆\n"+
                                             "&r &r &r&7You've unlocked &f&n"+originalName+"\n"+
-                                            "\n"+
+                                            "&r &r &r&7Your reward: &b+1 Knowledge Point"+
+                                            "\n\n"+
                                             "&r &r &r&7[&eClick here to open your collection menu&7]\n"
                             ));
                             textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -198,6 +201,12 @@ public class CollectionManager {
 
                             player.spigot().sendMessage(textComponent);
                             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 2.0f);
+
+                            PlayerWrapper playerWrapper = new PlayerWrapper(player);
+                            int knowledge = playerWrapper.getInt("knowledge") + 1;
+                            playerWrapper.setInt("knowledge", knowledge);
+
+                            Sidebar.updateKnowledge(playerWrapper, 1);
                         }
                         // increasing the collection
                         collection += amount;

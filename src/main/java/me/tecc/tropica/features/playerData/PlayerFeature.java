@@ -70,7 +70,7 @@ public class PlayerFeature {
         // initialization of auto saver (runnable)
         if (playerTaskManager == null) {
             playerTaskManager = new PlayerTaskManager();
-            playerTaskManager.runTaskTimer(Tropica.getTropica(), 20L, 20*60*5L);
+            playerTaskManager.runTaskTimer(Tropica.getTropica(), 20*60L, 20*60*5L);
         }
     }
 
