@@ -3,9 +3,12 @@ package me.tecc.tropica;
 import me.tecc.tropica.commands.BroadcastCommand;
 import me.tecc.tropica.commands.HelpCommand;
 import me.tecc.tropica.events.BasicEventHandler;
-import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.features.collection.CollectionManager;
+import me.tecc.tropica.features.playerData.PlayerTaskManager;
+import me.tecc.tropica.menus.TropicaMenu;
+import me.tecc.tropica.sidebar.Rank;
 import me.tecc.tropica.storage.CollectionContainer;
+import me.tecc.tropica.storage.PlayerContainer;
 import me.tecc.tropica.storage.PublicContainer;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +24,10 @@ public final class Tropica extends JavaPlugin {
         // initialize custom files
         new PublicContainer(this, "publicContainer.yml");
         new CollectionContainer(this, "collectionContainer.yml");
+        new PlayerContainer(this, "playerContainer.yml");
+
+        // init ranks
+        new Rank();
 
         // initialize other managers
         new CollectionManager();
@@ -37,7 +44,7 @@ public final class Tropica extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        PlayerTaskManager.getInstance().run();
     }
 
     /**

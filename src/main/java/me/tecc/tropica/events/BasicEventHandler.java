@@ -3,9 +3,12 @@ package me.tecc.tropica.events;
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
 import me.tecc.tropica.features.collection.CollectionManager;
+import me.tecc.tropica.features.playerData.PlayerFeature;
 import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;
+import me.tecc.tropica.sidebar.DynamicScoreboard;
+import me.tecc.tropica.sidebar.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -40,11 +43,17 @@ public class BasicEventHandler implements Listener {
         );
         menu.setItemStack(NBTEditor.addInteger(menu.getItemStack(), "nonce", 1));
         player.getInventory().setItem(8, menu.getItemStack());
+
+        new PlayerFeature(player);
+
+        Sidebar.sidebar(player);
+        DynamicScoreboard.updateTeamScoreboard();
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         event.setQuitMessage(""); // making quit message invisible
+        PlayerFeature.quit(event.getPlayer());
     }
 
     @EventHandler

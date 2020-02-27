@@ -103,7 +103,7 @@ public class CollectionManager {
                             if (!list.contains(uuid)) {
                                 if (i < 10) {
                                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-                                    itemLore.set(i + 2, "&f"+(i+1)+". &e"+offlinePlayer.getName()+" &7- &a"+TUtil.toFancyCost(Math.ceil(d)));
+                                    itemLore.set(i + 2, "&f"+(i+1)+". &e"+offlinePlayer.getName()+" &7- &a"+TUtil.toFancyDouble(Math.ceil(d)));
                                 }
 
                                 places.put(uuid, i + 1);

@@ -4,10 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -120,5 +120,16 @@ public class TUtil {
         File path = Tropica.getTropica().getDataFolder();
         // resolve file using the File(File, String) constructor
         return new File(path, fileName);
+    }
+
+    /**
+     * Gets the current date.
+     * Format: dd/MM/yyyy
+     * @return Current date as {@link String}
+     */
+    public static String getCurrentDateString() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate localDate = LocalDate.now();
+        return dtf.format(localDate);
     }
 }
