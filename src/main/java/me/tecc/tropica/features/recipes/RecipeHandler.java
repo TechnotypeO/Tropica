@@ -7,13 +7,11 @@ import me.tecc.tropica.items.RecipeCreator;
 import me.tecc.tropica.management.RecipeManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class RecipeHandler {
     private final RecipeManager recipeManager;
@@ -29,6 +27,18 @@ public class RecipeHandler {
         this.recipeCreator = new RecipeCreator();
 
         registerRecipes();
+        registerDefaults();
+    }
+
+    private void registerDefaults() {
+        List<Recipe> recipeList = new ArrayList<>();
+
+        for (RecipeFeature recipeFeature : recipes) {
+            Recipe recipe = recipeFeature.getShapedRecipe();
+            recipeList.add(recipe);
+        }
+
+        recipeManager.registerDefaults(recipeList);
     }
 
     private void registerRecipes() {
@@ -48,9 +58,9 @@ public class RecipeHandler {
         });
 
         String[] bambooBackpackRows = new String[] {
-                "B", "B", "B",
-                "B", "C", "B",
-                "B", "B", "B"
+                "BBB",
+                "BCB",
+                "BBB"
         };
 
         ItemStack bamboo_item = NBTEditor.createGameItem(Material.BAMBOO, 64);
