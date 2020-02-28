@@ -5,13 +5,16 @@ import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.items.RecipeCreator;
 import me.tecc.tropica.management.RecipeManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecipeHandler {
     private final RecipeManager recipeManager;
@@ -27,18 +30,6 @@ public class RecipeHandler {
         this.recipeCreator = new RecipeCreator();
 
         registerRecipes();
-        registerDefaults();
-    }
-
-    private void registerDefaults() {
-        List<Recipe> recipeList = new ArrayList<>();
-
-        for (RecipeFeature recipeFeature : recipes) {
-            Recipe recipe = recipeFeature.getShapedRecipe();
-            recipeList.add(recipe);
-        }
-
-        recipeManager.registerDefaults(recipeList);
     }
 
     private void registerRecipes() {
@@ -65,23 +56,25 @@ public class RecipeHandler {
 
         ItemStack bamboo_item = NBTEditor.createGameItem(Material.BAMBOO, 64);
         ItemStack chest_item = NBTEditor.createGameItem(Material.CHEST, 1);
+        ItemStack leather_item = NBTEditor.createGameItem(Material.LEATHER, 64);
 
         Map<Character, ItemStack> bambooBackpackMap = new HashMap<>();
-        bambooBackpackMap.put('B', bamboo_item);
+        bambooBackpackMap.put('B', leather_item);
         bambooBackpackMap.put('C', chest_item);
 
 
         register("bamboo_backpack", bambooBackpack.getItemStack(),
-                bambooBackpackRows, bambooBackpackMap, "backpack");
+                bambooBackpackRows, bambooBackpackMap, null);
     }
 
-    private void register(@NotNull String name, @NotNull ItemStack result, @NotNull String[] rows, Map<Character, ItemStack> items, String group) {
+    private void register(@NotNull String name, @NotNull ItemStack result, @NotNull String[] rows,
+                          Map<Character, ItemStack> items, String group) {
         ShapedRecipe shapedRecipe = RecipeCreator.createShapedRecipe(name, result, rows, items, group);
 
         RecipeFeature recipeFeature = new RecipeFeature(shapedRecipe);
         this.recipes.add(recipeFeature);
 
-        recipeManager.register(shapedRecipe);
+        Bukkit.addRecipe(shapedRecipe);
     }
 
     public static RecipeHandler getInstance() {

@@ -158,6 +158,10 @@ public class CollectionManager {
         final int amount = itemStack.getAmount();
         final String originalName;
 
+        if (itemStack.getType() == Material.PLAYER_HEAD) {
+            return;
+        }
+
         // getting the original name of item
         net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(itemStack.clone());
         originalName = itemStack1.getItem().g(itemStack1).getLegacyString();

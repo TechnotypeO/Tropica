@@ -28,6 +28,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
+
 public class BasicEventHandler implements Listener {
     public BasicEventHandler() {
         Bukkit.getPluginManager().registerEvents(this, Tropica.getTropica());
@@ -144,7 +146,13 @@ public class BasicEventHandler implements Listener {
     @EventHandler
     public void onPrepareCraft(PrepareItemCraftEvent event) {
         try {
-            event.getInventory().setResult(NBTEditor.addInteger(event.getInventory().getResult(), "nonce", 1));
+            ItemStack itemStack = event.getInventory().getResult();
+            itemStack = NBTEditor.addInteger(event.getInventory().getResult(), "nonce", 1);
+            if (itemStack.getType() == Material.PLAYER_HEAD) {
+                itemStack = NBTEditor.addString(event.getInventory().getResult(), "uuid", UUID.randomUUID().toString());
+            }
+
+            event.getInventory().setResult(itemStack);
         } catch (Exception e) {
 
         }

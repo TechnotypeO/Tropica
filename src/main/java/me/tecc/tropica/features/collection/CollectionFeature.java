@@ -2,10 +2,10 @@ package me.tecc.tropica.features.collection;
 
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
-import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;
+import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.storage.CollectionContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -64,7 +64,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
                         || m.equals(Material.BEDROCK) || m.equals(Material.DEBUG_STICK) || m.equals(Material.JIGSAW)
                 || m.equals(Material.POTION) || m.equals(Material.LINGERING_POTION) || m.equals(Material.SPAWNER)
                         || m.equals(Material.SPLASH_POTION) || m.equals(Material.TIPPED_ARROW) || m.equals(Material.END_PORTAL_FRAME)
-                || m.equals(Material.FARMLAND)) {
+                || m.equals(Material.FARMLAND) || m.equals(Material.PLAYER_HEAD)) {
                     continue;
                 }
                 if (m == null) { // this is in fact needed

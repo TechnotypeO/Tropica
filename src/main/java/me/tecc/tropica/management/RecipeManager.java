@@ -1,6 +1,5 @@
 package me.tecc.tropica.management;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -31,7 +30,6 @@ public class RecipeManager implements IManager<Recipe>, IHasDefaultRegistrants {
     @Override
     public void register(Recipe recipe) {
         this.recipes.put(getRecipeKey(recipe), recipe);
-        Bukkit.addRecipe(recipe);
     }
 
     @Override
@@ -53,8 +51,6 @@ public class RecipeManager implements IManager<Recipe>, IHasDefaultRegistrants {
 
     @Override
     public void registerDefaults(List<Recipe> recipeList) {
-        for (Recipe recipe : recipeList)
-            this.register(recipe);
 
         // keep this line the last
         this.hasRegisteredDefaults = true;
