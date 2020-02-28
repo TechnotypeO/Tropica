@@ -2,7 +2,9 @@ package me.tecc.tropica.items;
 
 
 import net.minecraft.server.v1_15_R1.NBTTagCompound;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
 
 public class NBTEditor {
     public static NBTTagCompound getTag(org.bukkit.inventory.ItemStack item) {
@@ -65,5 +67,13 @@ public class NBTEditor {
     public static int getInteger(org.bukkit.inventory.ItemStack item, String name) {
         NBTTagCompound tag = getTag(item);
         return tag.getInt(name);
+    }
+
+    public static ItemStack createGameItem(Material mat, int amount) {
+        ItemStack itemStack = new ItemStack(mat, amount);
+        itemStack = NBTEditor.addInteger(itemStack, "nonce", 1);
+
+
+        return itemStack;
     }
 }

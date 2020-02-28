@@ -5,6 +5,7 @@ import me.tecc.tropica.commands.HelpCommand;
 import me.tecc.tropica.events.BasicEventHandler;
 import me.tecc.tropica.features.collection.CollectionManager;
 import me.tecc.tropica.features.playerData.PlayerTaskManager;
+import me.tecc.tropica.features.recipes.RecipeHandler;
 import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.sidebar.Rank;
 import me.tecc.tropica.storage.CollectionContainer;
@@ -38,6 +39,9 @@ public final class Tropica extends JavaPlugin {
         // initialize listeners
         new BasicEventHandler();
         new TropicaMenu();
+
+        // init recipes
+        new RecipeHandler();
 
        //Commands <-
         getCommand("broadcast").setExecutor(new BroadcastCommand());
