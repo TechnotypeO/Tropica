@@ -1,16 +1,14 @@
 package me.tecc.tropica.items;
 
-import me.tecc.tropica.management.IManager;
-import org.bukkit.inventory.ShapelessRecipe;
-import org.jetbrains.annotations.NotNull;
 import me.tecc.tropica.TUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RecipeCreator {

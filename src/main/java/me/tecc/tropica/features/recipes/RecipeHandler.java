@@ -43,7 +43,7 @@ public class RecipeHandler {
         bambooBackpack.setLore(new String[]{
                 "&9Information!",
                 "&7This bamboo backpack can",
-                "&7hold up to 27 items.",
+                "&7hold up to some items.",
                 "",
                 "&eRight click to open!"
         });
@@ -54,9 +54,9 @@ public class RecipeHandler {
                 "BBB"
         };
 
-        ItemStack bamboo_item = NBTEditor.createGameItem(Material.BAMBOO, 64);
+        ItemStack bamboo_item = NBTEditor.createGameItem(Material.BAMBOO, 1);
         ItemStack chest_item = NBTEditor.createGameItem(Material.CHEST, 1);
-        ItemStack leather_item = NBTEditor.createGameItem(Material.LEATHER, 64);
+        ItemStack leather_item = NBTEditor.createGameItem(Material.LEATHER, 1);
 
         Map<Character, ItemStack> bambooBackpackMap = new HashMap<>();
         bambooBackpackMap.put('B', leather_item);
@@ -64,7 +64,7 @@ public class RecipeHandler {
 
 
         register("bamboo_backpack", bambooBackpack.getItemStack(),
-                bambooBackpackRows, bambooBackpackMap, null);
+                bambooBackpackRows, bambooBackpackMap, "backpack");
     }
 
     private void register(@NotNull String name, @NotNull ItemStack result, @NotNull String[] rows,
