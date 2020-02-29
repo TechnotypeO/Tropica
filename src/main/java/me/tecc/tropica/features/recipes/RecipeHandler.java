@@ -34,15 +34,16 @@ public class RecipeHandler {
 
     private void registerRecipes() {
 
+        //bamboo
         Item bambooBackpack = new Item(HeadManager.createSkull(
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6L" +
                         "y90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2E2YWQ4YWQ5MTNkZWYxM2JkNT" +
                         "c0MTY1NWU3N2QxMzRlYjFiNTdmMDI5NzBkYWE2YjMzMDgyNzU0ZDFhZmZjNCJ9fX0="
         ));
-        bambooBackpack.setName("&aBamboo Backpack &7(Right Click)");
+        bambooBackpack.setName("&aTropical Backpack &7(Right Click)");
         bambooBackpack.setLore(new String[]{
                 "&9Information!",
-                "&7This bamboo backpack can",
+                "&7This tropical backpack can",
                 "&7hold up to some items.",
                 "",
                 "&eRight click to open!"
@@ -54,7 +55,6 @@ public class RecipeHandler {
                 "BBB"
         };
 
-        ItemStack bamboo_item = NBTEditor.createGameItem(Material.BAMBOO, 1);
         ItemStack chest_item = NBTEditor.createGameItem(Material.CHEST, 1);
         ItemStack leather_item = NBTEditor.createGameItem(Material.LEATHER, 1);
 
@@ -63,8 +63,37 @@ public class RecipeHandler {
         bambooBackpackMap.put('C', chest_item);
 
 
-        register("bamboo_backpack", bambooBackpack.getItemStack(),
+        register("tropical_backpack", bambooBackpack.getItemStack(),
                 bambooBackpackRows, bambooBackpackMap, "backpack");
+
+        // jump pad registration
+        Item jumpPad = new Item(Material.SLIME_BLOCK, 1,
+                "&aJump Pad &7(Place Down)",
+                "&9Information!",
+                "&7Place this down and jump on it",
+                "&7to be launched into the air.",
+                "",
+                "&r &r &r &r &b◆&3&l COOL TIP &b◆",
+                "&7Look at a certain direction while",
+                "&7jumping to specify the destination.",
+                "",
+                "&ePlace on the ground!"
+        );
+
+        String[] jumpPadRows = new String[]{
+                "III",
+                "ISI",
+                "III"
+        };
+
+        ItemStack iron_block = NBTEditor.createGameItem(Material.IRON_BLOCK, 1);
+        ItemStack slime_ball = NBTEditor.createGameItem(Material.SLIME_BALL, 1);
+
+        Map<Character, ItemStack> jumpPadMap = new HashMap<>();
+        jumpPadMap.put('I', iron_block);
+        jumpPadMap.put('S', slime_ball);
+
+        register("jumppad", jumpPad.getItemStack(), jumpPadRows, jumpPadMap, "fun");
     }
 
     private void register(@NotNull String name, @NotNull ItemStack result, @NotNull String[] rows,
