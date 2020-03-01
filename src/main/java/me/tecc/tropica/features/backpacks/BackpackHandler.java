@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -59,6 +60,15 @@ public class BackpackHandler implements Listener {
     }
 
     @EventHandler
+    public void onSlotChange(PlayerItemHeldEvent e) {
+        Player player = e.getPlayer();
+
+        if (player.getOpenInventory().getTitle().equalsIgnoreCase("Tropical Backpack")) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
 
@@ -82,6 +92,14 @@ public class BackpackHandler implements Listener {
                         if (item.getName().equalsIgnoreCase(TUtil.toColor("&aTropical Backpack &7(Right Click)"))) {
                             e.setCancelled(true);
 
+                            if (player.getInventory().getItemInMainHand() == null) {
+                                return;
+                            }
+
+                            if (!new Item(player.getInventory().getItemInMainHand()).equals(item)) {
+                                return;
+                            }
+
                             if (dropped.contains(player.getUniqueId())) {
                                 return;
                             }
@@ -99,7 +117,7 @@ public class BackpackHandler implements Listener {
                             dropped.remove(player.getUniqueId());
                         }
                     }
-                }.runTaskLater(Tropica.getTropica(), 3L);
+                }.runTaskLater(Tropica.getTropica(), 1L);
 
             }
         }
