@@ -3,12 +3,15 @@ package me.tecc.tropica;
 import me.tecc.tropica.commands.BroadcastCommand;
 import me.tecc.tropica.commands.HelpCommand;
 import me.tecc.tropica.events.BasicEventHandler;
+import me.tecc.tropica.features.backpacks.BackpackHandler;
 import me.tecc.tropica.features.collection.CollectionManager;
+import me.tecc.tropica.features.jumppads.JumpPadHandler;
 import me.tecc.tropica.features.playerData.PlayerTaskManager;
 import me.tecc.tropica.features.recipes.RecipeHandler;
 import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.sidebar.Rank;
 import me.tecc.tropica.storage.CollectionContainer;
+import me.tecc.tropica.storage.JumpPadContainer;
 import me.tecc.tropica.storage.PlayerContainer;
 import me.tecc.tropica.storage.PublicContainer;
 import org.bukkit.Bukkit;
@@ -29,6 +32,7 @@ public final class Tropica extends JavaPlugin {
         new PublicContainer(this, "publicContainer.yml");
         new CollectionContainer(this, "collectionContainer.yml");
         new PlayerContainer(this, "playerContainer.yml");
+        new JumpPadContainer(this, "jumpPadContainer.yml");
 
         // init ranks
         new Rank();
@@ -42,6 +46,12 @@ public final class Tropica extends JavaPlugin {
 
         // init recipes
         new RecipeHandler();
+
+        // register backpack handler
+        new BackpackHandler();
+
+        // register jumppad handler
+        new JumpPadHandler().initializationProcess();
 
        //Commands <-
         getCommand("broadcast").setExecutor(new BroadcastCommand());

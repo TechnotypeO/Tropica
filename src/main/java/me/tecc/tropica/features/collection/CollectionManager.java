@@ -194,7 +194,7 @@ public class CollectionManager {
                             // fancy message and sounds
                             TextComponent textComponent = new TextComponent(TUtil.toColor(
                                     "\n&r &r &r &r &r &a&l◆ &2&lNEW COLLECTION UNLOCKED &a&l◆\n"+
-                                            "&r &r &r&7You've unlocked &f&n"+originalName+"\n"+
+                                            "&r &r &r&7You've unlocked &f"+originalName+"\n"+
                                             "&r &r &r&7Your reward: &b+1 Knowledge Point"+
                                             "\n\n"+
                                             "&r &r &r&7[&eClick here to open your collection menu&7]\n"
