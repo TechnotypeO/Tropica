@@ -1,5 +1,6 @@
 package me.tecc.tropica.features.recipes;
 
+import me.tecc.tropica.Tropica;
 import me.tecc.tropica.features.items.TropicaItems;
 import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
@@ -21,6 +22,7 @@ public class RecipeHandler {
     private final Collection<RecipeFeature> recipes;
     private final RecipeCreator recipeCreator;
     private static RecipeHandler recipeHandler;
+    private final RecipeMenu recipeMenu;
 
     public RecipeHandler() {
         recipeHandler = this;
@@ -30,6 +32,9 @@ public class RecipeHandler {
         this.recipeCreator = new RecipeCreator();
 
         registerRecipes();
+
+        this.recipeMenu = new RecipeMenu();
+        Bukkit.getPluginManager().registerEvents(recipeMenu, Tropica.getTropica());
     }
 
     private void registerRecipes() {

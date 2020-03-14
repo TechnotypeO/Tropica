@@ -34,6 +34,13 @@ public class TropicaMenu implements Listener {
                 "&eClick to browse!"
         ));
 
+        menu.setSlot(13, new Item(Material.ENCHANTED_BOOK, 1, "&dRecipes",
+                "&9Information!",
+                "&7View all special recipes.",
+                "",
+                "&cComing Soon!"
+        ));
+
         menu.setSlot(31, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cClose"));
 
         menu.open(player, sound);
