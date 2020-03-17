@@ -10,10 +10,7 @@ import me.tecc.tropica.features.playerData.PlayerTaskManager;
 import me.tecc.tropica.features.recipes.RecipeHandler;
 import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.sidebar.Rank;
-import me.tecc.tropica.storage.CollectionContainer;
-import me.tecc.tropica.storage.JumpPadContainer;
-import me.tecc.tropica.storage.PlayerContainer;
-import me.tecc.tropica.storage.PublicContainer;
+import me.tecc.tropica.storage.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -34,6 +31,9 @@ public final class Tropica extends JavaPlugin {
         new PlayerContainer(this, "playerContainer.yml");
         new JumpPadContainer(this, "jumpPadContainer.yml");
 
+        // init word filter
+        new WordFilter();
+
         // init ranks
         new Rank();
 
@@ -52,6 +52,7 @@ public final class Tropica extends JavaPlugin {
 
         // register jumppad handler
         new JumpPadHandler().initializationProcess();
+
 
        //Commands <-
         getCommand("broadcast").setExecutor(new BroadcastCommand());

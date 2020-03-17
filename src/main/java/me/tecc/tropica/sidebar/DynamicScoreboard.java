@@ -9,9 +9,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.*;
 
 public class DynamicScoreboard {
     private static int customID = 0;
@@ -95,12 +93,10 @@ public class DynamicScoreboard {
 
 
     public static void updateTeamScoreboard() {
+        Collection<UUID> uuidCollection = new ArrayList<>();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             final Scoreboard scoreboard = player.getScoreboard();
-
-            if (scoreboard == null) {
-                continue;
-            }
 
             int i = 1;
             for (RankObject rankObject : Rank.rankObjects) {
@@ -119,7 +115,10 @@ public class DynamicScoreboard {
 
                 for (final Player player1 : Bukkit.getOnlinePlayers()) {
                     if (player1.hasPermission("slover.rank."+rankObject.getName())) {
-                        team.addEntry(player1.getName());
+                        if (!uuidCollection.contains(player1.getUniqueId())) {
+                            team.addEntry(player1.getName());
+                            uuidCollection.add(player1.getUniqueId());
+                        }
                     }
                 }
                 i++;

@@ -15,5 +15,6 @@ public final class MessageEventHandler extends AbstractEventHandler {
     @HandlerMethod(AsyncPlayerChatEvent.class)
     public void onPlayerChatEvent(AsyncPlayerChatEvent event) {
 
+
     }
 }

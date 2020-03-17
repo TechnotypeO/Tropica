@@ -9,7 +9,12 @@ import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;
 import me.tecc.tropica.sidebar.DynamicScoreboard;
+import me.tecc.tropica.sidebar.Rank;
 import me.tecc.tropica.sidebar.Sidebar;
+import me.tecc.tropica.storage.WordFilter;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
@@ -21,10 +26,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -213,5 +215,36 @@ public class BasicEventHandler implements Listener {
         playerWrapper.setInt("knowledge", knowledge);
 
         Sidebar.updateKnowledge(playerWrapper, 10);
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e) {
+        e.setCancelled(true);
+        Player player = e.getPlayer();
+        String rank = Rank.getRank(player);
+        String prefix = Rank.getPrefix(rank);
+
+        String message = e.getMessage();
+        String chat = "&7: ";
+
+        if (Rank.hasRank(player, "vip") || Rank.hasRank(player, "tester")) {
+            chat = "&f: ";
+        }
+        if (Rank.hasRank(player, "owner")) {
+            chat = "&f: &e";
+        }
+
+        if (WordFilter.containsBadWords(message)) {
+            message = "Ooh, just did a bad thing. Yeah!";
+        }
+
+        TextComponent textComponent = new TextComponent(TUtil.toColor(prefix + player.getName() + chat) + message);
+        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new ComponentBuilder(TUtil.toColor("&7Hey, you can click this to &ecopy&7 the message!")).create()));
+        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, message));
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.spigot().sendMessage(textComponent);
+        }
     }
 }
