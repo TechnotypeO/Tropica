@@ -5,6 +5,7 @@ import me.tecc.tropica.Tropica;
 import me.tecc.tropica.features.collection.CollectionManager;
 import me.tecc.tropica.features.playerData.PlayerFeature;
 import me.tecc.tropica.features.playerData.PlayerWrapper;
+import me.tecc.tropica.features.teams.TeamHandler;
 import me.tecc.tropica.items.Item;
 import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;
@@ -20,6 +21,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,9 +32,11 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class BasicEventHandler implements Listener {
+    private Random random = new Random();
     public BasicEventHandler() {
         Bukkit.getPluginManager().registerEvents(this, Tropica.getTropica());
     }
@@ -53,16 +57,10 @@ public class BasicEventHandler implements Listener {
         menu.setItemStack(NBTEditor.addInteger(menu.getItemStack(), "nonce", 1));
         player.getInventory().setItem(8, menu.getItemStack());
 
-        new PlayerFeature(player);
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                Sidebar.sidebar(player);
-                DynamicScoreboard.updateTeamScoreboard();
-            }
-        }.runTaskLater(Tropica.getTropica(), 20*2L);
+        new PlayerFeature(player, aBoolean -> {
+            Sidebar.sidebar(player);
+            DynamicScoreboard.updateTeamScoreboard();
+        });
 
     }
 
@@ -70,6 +68,7 @@ public class BasicEventHandler implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         event.setQuitMessage(""); // making quit message invisible
         PlayerFeature.quit(event.getPlayer());
+        TeamHandler.getInstance().unloadPlayer(event.getPlayer());
     }
 
     @EventHandler
@@ -115,6 +114,23 @@ public class BasicEventHandler implements Listener {
     }
 
     @EventHandler
+    public void onFurnace(FurnaceSmeltEvent e) {
+        ItemStack itemStack = e.getResult();
+        if (NBTEditor.hasInteger(itemStack, "nonce")) {
+            return;
+        }
+        itemStack = NBTEditor.addInteger(itemStack, "nonce", 1);
+        e.setResult(itemStack);
+
+        Furnace furnace = (Furnace) e.getBlock().getState();
+        if (!furnace.getSnapshotInventory().getViewers().isEmpty()) {
+            Player p = (Player) furnace.getSnapshotInventory().getViewers().get(random.nextInt(furnace.getSnapshotInventory().getViewers().size()));
+            CollectionManager.getInstance().handleEvent(p, itemStack);
+        }
+
+    }
+
+    @EventHandler
     public void onInventoryMove(InventoryMoveItemEvent event) {
         ItemStack itemStack = event.getItem();
         if (NBTEditor.hasInteger(itemStack, "nonce")) {
@@ -149,6 +165,10 @@ public class BasicEventHandler implements Listener {
     public void onPrepareCraft(PrepareItemCraftEvent event) {
         try {
             ItemStack itemStack = event.getInventory().getResult();
+            if (itemStack.getType() == Material.AIR) {
+                return;
+            }
+
             itemStack = NBTEditor.addInteger(event.getInventory().getResult(), "nonce", 1);
             if (itemStack.getType() == Material.PLAYER_HEAD) {
                 itemStack = NBTEditor.addString(event.getInventory().getResult(), "uuid", UUID.randomUUID().toString());

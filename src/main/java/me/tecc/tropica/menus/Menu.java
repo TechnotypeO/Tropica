@@ -20,6 +20,10 @@ public class Menu {
         this.size = size;
         this.name = name;
         this.inventory = Bukkit.createInventory(null, size, name);
+
+        if (!names.contains(name)) {
+            names.add(name);
+        }
     }
 
     public String getName() {

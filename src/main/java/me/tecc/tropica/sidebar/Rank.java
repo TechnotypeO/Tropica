@@ -32,7 +32,7 @@ public class Rank {
         register("nitro", "&d[NITRO]", "&d");
         register("vip_plus", "&a[VIP&c+&a]", "&a");
         register("vip", "&a[VIP]", "&a");
-        register("player", "&7", "");
+        register("player", "&7", "&7");
     }
 
     private void register(final String name, final String prefix, final String color) {
@@ -52,7 +52,7 @@ public class Rank {
 
     public static String getPrefix(final String s) {
         if (s.equalsIgnoreCase("player")) {
-            return "";
+            return "&7";
         }
 
         for (final RankObject rankObject : rankObjects) {

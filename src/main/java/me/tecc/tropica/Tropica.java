@@ -1,13 +1,14 @@
 package me.tecc.tropica;
 
-import me.tecc.tropica.commands.BroadcastCommand;
-import me.tecc.tropica.commands.HelpCommand;
+import me.tecc.tropica.commands.*;
 import me.tecc.tropica.events.BasicEventHandler;
 import me.tecc.tropica.features.backpacks.BackpackHandler;
 import me.tecc.tropica.features.collection.CollectionManager;
+import me.tecc.tropica.features.homes.HomeHandler;
 import me.tecc.tropica.features.jumppads.JumpPadHandler;
 import me.tecc.tropica.features.playerData.PlayerTaskManager;
 import me.tecc.tropica.features.recipes.RecipeHandler;
+import me.tecc.tropica.features.teams.TeamHandler;
 import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.sidebar.Rank;
 import me.tecc.tropica.storage.*;
@@ -26,10 +27,10 @@ public final class Tropica extends JavaPlugin {
         }
 
         // initialize custom files
-        new PublicContainer(this, "publicContainer.yml");
-        new CollectionContainer(this, "collectionContainer.yml");
-        new PlayerContainer(this, "playerContainer.yml");
-        new JumpPadContainer(this, "jumpPadContainer.yml");
+        new PublicContainer(this, "publicContainer.yml"); //file for server stuff
+        new CollectionContainer(this, "collectionContainer.yml"); //file for collections
+        new PlayerContainer(this, "playerContainer.yml"); //file for player data
+        new JumpPadContainer(this, "jumpPadContainer.yml"); //file for jumppads
 
         // init word filter
         new WordFilter();
@@ -39,6 +40,9 @@ public final class Tropica extends JavaPlugin {
 
         // initialize other managers
         new CollectionManager();
+
+        // init teams
+        new TeamHandler();
 
         // initialize listeners
         new BasicEventHandler();
@@ -53,10 +57,17 @@ public final class Tropica extends JavaPlugin {
         // register jumppad handler
         new JumpPadHandler().initializationProcess();
 
+        // init home handler
+        new HomeHandler();
+
 
        //Commands <-
         getCommand("broadcast").setExecutor(new BroadcastCommand());
         getCommand("help").setExecutor(new HelpCommand());
+        getCommand("spawn").setExecutor(new SpawnCommand());
+        getCommand("enderchest").setExecutor(new EnderChestCommand());
+        getCommand("craft").setExecutor(new CraftingCommand());
+        getCommand("surface").setExecutor(new SurfaceCommand());
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(player, "");

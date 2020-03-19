@@ -38,7 +38,7 @@ public class TropicaMenu implements Listener {
                 "&9Information!",
                 "&7View all special recipes.",
                 "",
-                "&cComing Soon!"
+                "&eClick to browse!"
         ));
 
         menu.setSlot(31, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cClose"));
@@ -86,6 +86,13 @@ public class TropicaMenu implements Listener {
             if (item.getName().equalsIgnoreCase(TUtil.toColor("&6Collection"))) {
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
                 player.performCommand("collection");
+                return;
+            }
+
+            if (item.getName().equalsIgnoreCase(TUtil.toColor("&dRecipes"))) {
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                player.performCommand("recipes");
+                return;
             }
 
         }

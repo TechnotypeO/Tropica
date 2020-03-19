@@ -8,6 +8,10 @@ import me.tecc.tropica.items.RecipeCreator;
 import me.tecc.tropica.management.RecipeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecipeHandler {
+public class RecipeHandler implements CommandExecutor {
     private final RecipeManager recipeManager;
     private final Collection<RecipeFeature> recipes;
     private final RecipeCreator recipeCreator;
@@ -35,6 +39,16 @@ public class RecipeHandler {
 
         this.recipeMenu = new RecipeMenu();
         Bukkit.getPluginManager().registerEvents(recipeMenu, Tropica.getTropica());
+        Tropica.getTropica().getCommand("recipes").setExecutor(this);
+    }
+
+    @Override
+    public boolean onCommand( CommandSender commandSender, Command command, String s, String[] strings) {
+        if (commandSender instanceof Player) {
+            Player player = (Player) commandSender;
+            recipeMenu.openMenu(player, true);
+        }
+        return true;
     }
 
     private void registerRecipes() {

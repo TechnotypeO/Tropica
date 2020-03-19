@@ -106,6 +106,7 @@ public class DynamicScoreboard {
                 }
                 team = scoreboard.registerNewTeam("0" + i + rankObject.getName());
                 team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                team.setColor(org.bukkit.ChatColor.getByChar(rankObject.getColor().charAt(1)));
 
                 if (rankObject.getName().equalsIgnoreCase("player")) {
                     team.setPrefix(TUtil.toColor("&7"));

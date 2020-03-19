@@ -7,6 +7,7 @@ import me.tecc.tropica.storage.PlayerContainer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * PlayerFeature is a class which holds all players' custom data which
@@ -43,7 +44,7 @@ public class PlayerFeature {
      *
      * @param player the player
      */
-    public PlayerFeature(Player player) {
+    public PlayerFeature(Player player, Consumer<Boolean> consumer) {
         this.player = player;
 
         //get json from files
@@ -56,13 +57,22 @@ public class PlayerFeature {
                         JsonObject data = new JsonObject();
                         //all default values
                         data.addProperty("knowledge", 0);
+                        data.addProperty("cash", 100.0D);
+                        data.addProperty("team", "none");
 
                         jsonObject = data;
                     } else {
                         //reading from files
                         jsonObject = new JsonParser().parse(string).getAsJsonObject();
+                        if (!jsonObject.has("cash")) {
+                            jsonObject.addProperty("cash", 100D);
+                        }
+                        if (jsonObject.has("team")) {
+                            jsonObject.addProperty("team", "none");
+                        }
                     }
                     isLoaded = true;
+                    if (consumer != null) consumer.accept(true);
                 });
 
         playerFeatures.add(this);
@@ -99,7 +109,7 @@ public class PlayerFeature {
 
         // checking if null, then creating a new instance if not created
         if (playerFeature == null) {
-            playerFeature = new PlayerFeature(player);
+            playerFeature = new PlayerFeature(player, null);
         }
         // inserting into cache
         cache.put(player.getUniqueId(), playerFeature);

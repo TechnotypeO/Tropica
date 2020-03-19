@@ -36,7 +36,7 @@ public class PlayerTaskManager extends BukkitRunnable {
             long data = System.currentTimeMillis();
 
             Player player = c.getPlayer();
-            UUID uuid = player.getUniqueId();
+            UUID uuid = player.getUniqueId() ;
 
             String toBeSaved = c.getJsonObject().toString();
             PlayerContainer.getInstance().setAsync(uuid.toString(), toBeSaved, aBoolean -> {

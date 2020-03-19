@@ -17,3 +17,21 @@ commands:
     aliases:
       - items
       - collect
+  recipes:
+    aliases:
+      - recipe
+      - craftts
+  craft:
+    aliases:
+      - crafting
+      - c
+  enderchest:
+    aliases:
+      - ec
+  spawn:
+  sethome:
+  delhome:
+  home:
+    aliases:
+      - h
+  surface:
