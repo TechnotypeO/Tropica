@@ -34,7 +34,7 @@ public class RecipeMenu implements Listener {
 
         for (int i = 0; i < collection.size(); i++) {
             RecipeFeature recipeFeature = collection.get(i);
-            menu.setSlot(i, new Item(recipeFeature.getShapedRecipe().getResult().clone()));
+            menu.setSlot(i + 10, new Item(recipeFeature.getShapedRecipe().getResult().clone()));
         }
 
         menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));

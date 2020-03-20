@@ -37,6 +37,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -215,7 +216,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
                         UUID uuid = UUID.fromString(jsonObject.get("uuid").getAsString());
 
                         try {
-                            Item boughtItem = BazaarCache.cache.get(nbt);
+                            Item boughtItem = BazaarCache.cache.get(nbt).clone();
                             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1.0f, 1.25f);
 
                             PlayerWrapper wrapper = new PlayerWrapper(player);
@@ -254,9 +255,22 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
                                     p.spigot().sendMessage(t);
 
-                                    PlayerWrapper playerWrapper = new PlayerWrapper(p);
-                                    playerWrapper.setDouble("cash", playerWrapper.getDouble("cash") + price);
-                                    Sidebar.updateCash(playerWrapper, price);
+                                    new BukkitRunnable() {
+
+                                        @Override
+                                        public void run() {
+                                            PlayerWrapper playerWrapper = new PlayerWrapper(p);
+                                            playerWrapper.setDouble("cash", playerWrapper.getDouble("cash") + price);
+                                            Sidebar.updateCash(playerWrapper, price);
+
+                                            if (p.getOpenInventory() != null) {
+                                                if (p.getOpenInventory().getTitle().equalsIgnoreCase("Items Management")) {
+                                                    openCurrentItems(p, false);
+                                                }
+                                            }
+                                        }
+                                    }.runTask(Tropica.getTropica());
+
                                 } else {
                                     BazaarContainer.getInstance().getAsync(uuid.toString(),
                                             0.0D, new Consumer<Object>() {
@@ -333,7 +347,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
                     Item boughtItem = null;
                     try {
-                        boughtItem = BazaarCache.cache.get(nbt);
+                        boughtItem = BazaarCache.cache.get(nbt).clone();
 
                         StringBuilder showItem = new StringBuilder(item.getName());
                         if (boughtItem.hasLore()) {
@@ -490,7 +504,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
         int currentPage = pages.getOrDefault(player.getUniqueId(), 1);
         int auctionsSize = auctions.size();
 
-        if (auctionsSize > staticSize) {
+        if ((double)auctionsSize / 21 > (double)currentPage) {
             menu.setSlot(43, staticNext);
         }
 

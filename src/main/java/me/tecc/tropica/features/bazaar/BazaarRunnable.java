@@ -14,7 +14,7 @@ public class BazaarRunnable extends BukkitRunnable {
     public BazaarRunnable(BazaarHandler bazaarHandler) {
         this.bazaarHandler = bazaarHandler;
 
-        this.runTaskTimer(Tropica.getTropica(), 20*10L, 20*60L);
+        this.runTaskTimer(Tropica.getTropica(), 20*10L, 20*30L);
     }
 
     @Override

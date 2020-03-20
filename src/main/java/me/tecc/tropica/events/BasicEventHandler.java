@@ -19,23 +19,31 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_15_R1.*;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Furnace;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BasicEventHandler implements Listener {
     private Random random = new Random();
@@ -297,5 +305,110 @@ public class BasicEventHandler implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.spigot().sendMessage(textComponent);
         }
+    }
+
+    @EventHandler
+    public void onMobKill(EntityDeathEvent e) {
+        Entity entity = e.getEntity();
+
+        if (entity instanceof Monster) {
+            Monster monster = (Monster) entity;
+            if (monster.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+                EntityDamageByEntityEvent lastDamageCause = (EntityDamageByEntityEvent) monster.getLastDamageCause();
+
+                if (lastDamageCause.getDamager() instanceof Player) {
+                    Player player = (Player) lastDamageCause.getDamager();
+
+                    double cash = Math.ceil((Math.random() * 10) + 1);
+
+                    PlayerWrapper playerWrapper = new PlayerWrapper(player);
+                    playerWrapper.setDouble("cash", playerWrapper.getDouble("cash") + cash);
+
+                    Collection<Player> collection =
+                            Bukkit.getOnlinePlayers().stream().filter(p -> p.getLocation().distance(entity.getLocation()) <= 20).collect(Collectors.toList());
+                    entity.getWorld().playSound(entity.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 2.0f);
+
+                    spawnMoney(cash, "&6+$x", entity.getLocation(), collection);
+
+                    Sidebar.updateCash(playerWrapper, cash);
+                }
+            }
+        }
+    }
+    private Map<UUID, List<Integer>> ids = new HashMap<>();
+
+    private void spawnMoney(double price, String pattern, Location location, Collection<Player> entities) {
+        Location center = location.getBlock().getLocation().add(0.5, -1.0, 0.5);
+
+        if (random.nextDouble() <= 0.5) {
+            center.add(random.nextDouble(), 0, random.nextDouble());
+        } else if (random.nextDouble() <= 0.5) {
+            center.add(-random.nextDouble(), 0, random.nextDouble());
+        } else if (random.nextDouble() <= 0.5) {
+            center.add(-random.nextDouble(), 0, -random.nextDouble());
+        } else if (random.nextDouble() <= 0.5) {
+            center.add(random.nextDouble(), 0, -random.nextDouble());
+        }
+
+        EntityArmorStand entityArmorStand = craftEntityArmorStand(center, pattern.replaceAll("x", TUtil.toFancyDouble(price)));
+
+        final DataWatcher dataWatcher = entityArmorStand.getDataWatcher();
+        final PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entityArmorStand.getId(), dataWatcher, false);
+
+        PacketPlayOutSpawnEntityLiving spawn = new PacketPlayOutSpawnEntityLiving(entityArmorStand);
+
+
+        for (Player p : entities) {
+            if (p.getLocation().distance(center) <= 20) {
+                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(spawn);
+                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(metadata);
+
+                List<Integer> integers = ids.getOrDefault(p.getUniqueId(), new ArrayList<>());
+                integers.add(entityArmorStand.getId());
+                ids.put(p.getUniqueId(), integers);
+            }
+        }
+
+
+        new BukkitRunnable() {
+            int timer = 0;
+
+            @Override
+            public void run() {
+                timer += 1;
+                if (timer >= 20) {
+                    PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityArmorStand.getId());
+
+                    for (Player p : entities) {
+                        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+                    }
+                    this.cancel();
+                } else {
+
+                    PacketPlayOutEntity.PacketPlayOutRelEntityMove packet = new PacketPlayOutEntity.
+                            PacketPlayOutRelEntityMove(entityArmorStand.getId(), (short) 0, (short)555, (short)0, true);
+                    for (Player p : entities) {
+                        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(metadata);
+                        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+                    }
+                }
+            }
+        }.runTaskTimer(Tropica.getTropica(), 0L, 1L);
+    }
+
+    private EntityArmorStand craftEntityArmorStand(Location loc, String s) {
+        WorldServer worldServer = ((CraftWorld) loc.getWorld()).getHandle();
+        EntityArmorStand entityArmorStand = new EntityArmorStand(EntityTypes.ARMOR_STAND, worldServer);
+
+        entityArmorStand.setSilent(true);
+        entityArmorStand.setMarker(false);
+        entityArmorStand.setNoGravity(true);
+        entityArmorStand.setSmall(true);
+        entityArmorStand.setInvisible(true);
+        entityArmorStand.setCustomNameVisible(true);
+        entityArmorStand.setCustomName(IChatBaseComponent.ChatSerializer.a("{\"text\":\""+ TUtil.toColor(s) +"\"}"));
+
+        entityArmorStand.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+        return entityArmorStand;
     }
 }
