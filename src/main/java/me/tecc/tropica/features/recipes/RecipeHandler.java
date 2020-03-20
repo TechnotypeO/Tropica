@@ -35,7 +35,9 @@ public class RecipeHandler implements CommandExecutor {
         this.recipeManager = new RecipeManager();
         this.recipeCreator = new RecipeCreator();
 
-        registerRecipes();
+        try {
+            registerRecipes();
+        } catch (Exception ignored) {}
 
         this.recipeMenu = new RecipeMenu();
         Bukkit.getPluginManager().registerEvents(recipeMenu, Tropica.getTropica());
@@ -116,5 +118,9 @@ public class RecipeHandler implements CommandExecutor {
 
     public RecipeManager getRecipeManager() {
         return recipeManager;
+    }
+
+    public RecipeMenu getRecipeMenu() {
+        return recipeMenu;
     }
 }

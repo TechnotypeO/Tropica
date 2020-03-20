@@ -118,7 +118,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
      * @param sound play sound on opening true/false
      * @param material the material
      */
-    private void openMenuCollection(Player player, boolean sound, Material material) {
+    public void openMenuCollection(Player player, boolean sound, Material material) {
         Menu menu = new Menu(6*9, "Collection Menu");
 
         // getting basic data
@@ -216,7 +216,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
      * @param player the target player
      * @param sound play sound on opening true/false
      */
-    private void openMenu(Player player, boolean sound) {
+    public void openMenu(Player player, boolean sound) {
         Menu menu = new Menu(6*9, "Collection Menu");
         // getting page of player
         int page = pages.getOrDefault(player.getUniqueId(), 0);
@@ -354,4 +354,11 @@ public class CollectionFeature implements CommandExecutor, Listener {
         }
     }
 
+    public LinkedList<Material> getListOfMaterials() {
+        return listOfMaterials;
+    }
+
+    public Map<UUID, Integer> getPages() {
+        return pages;
+    }
 }

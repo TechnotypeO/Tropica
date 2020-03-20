@@ -2,6 +2,9 @@ package me.tecc.tropica.menus;
 
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
+import me.tecc.tropica.features.bazaar.BazaarHandler;
+import me.tecc.tropica.features.collection.CollectionManager;
+import me.tecc.tropica.features.recipes.RecipeHandler;
 import me.tecc.tropica.items.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -37,6 +40,15 @@ public class TropicaMenu implements Listener {
         menu.setSlot(13, new Item(Material.ENCHANTED_BOOK, 1, "&dRecipes",
                 "&9Information!",
                 "&7View all special recipes.",
+                "",
+                "&eClick to browse!"
+        ));
+
+        menu.setSlot(15, new Item(Material.EMERALD, 1, "&aBazaar the Tropical Market",
+                "&9Information!",
+                "&7The main source of &6Cash&7.",
+                "&7Place created for economy growth.",
+                "&7Sell, buy, and create auctions.",
                 "",
                 "&eClick to browse!"
         ));
@@ -85,13 +97,19 @@ public class TropicaMenu implements Listener {
 
             if (item.getName().equalsIgnoreCase(TUtil.toColor("&6Collection"))) {
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
-                player.performCommand("collection");
+                CollectionManager.getInstance().getCollectionCommand().openMenu(player, false);
                 return;
             }
 
             if (item.getName().equalsIgnoreCase(TUtil.toColor("&dRecipes"))) {
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
-                player.performCommand("recipes");
+                RecipeHandler.getInstance().getRecipeMenu().openMenu(player, false);
+                return;
+            }
+
+            if (item.getName().equalsIgnoreCase(TUtil.toColor("&aBazaar the Tropical Market"))) {
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                BazaarHandler.getInstance().openMenu(player, false);
                 return;
             }
 

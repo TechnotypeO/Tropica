@@ -76,7 +76,7 @@ public class HomeHandler implements CommandExecutor, Listener {
 
                         new Text("&a&lSUCCESS! &7Your home was successfully set!").send(player);
                     }
-
+                    playerWrapper.setJsonArray("homes", jsonArray);
 
                 } else {
                     new Text("&c&lOOPS! &7Missing arguments: &f/sethome (text)&7!").send(player);
@@ -115,7 +115,7 @@ public class HomeHandler implements CommandExecutor, Listener {
                         new Text("&a&lSUCCESS! &7Your home was successfully removed!").send(player);
                     }
 
-
+                    playerWrapper.setJsonArray("homes", jsonArray);
                 } else {
                     new Text("&c&lOOPS! &7Missing arguments: &f/delhome (text)&7!").send(player);
                 }

@@ -3,6 +3,7 @@ package me.tecc.tropica;
 import me.tecc.tropica.commands.*;
 import me.tecc.tropica.events.BasicEventHandler;
 import me.tecc.tropica.features.backpacks.BackpackHandler;
+import me.tecc.tropica.features.bazaar.BazaarHandler;
 import me.tecc.tropica.features.collection.CollectionManager;
 import me.tecc.tropica.features.homes.HomeHandler;
 import me.tecc.tropica.features.jumppads.JumpPadHandler;
@@ -31,6 +32,7 @@ public final class Tropica extends JavaPlugin {
         new CollectionContainer(this, "collectionContainer.yml"); //file for collections
         new PlayerContainer(this, "playerContainer.yml"); //file for player data
         new JumpPadContainer(this, "jumpPadContainer.yml"); //file for jumppads
+        new BazaarContainer(this, "bazaarContainer.yml"); //file for left out bazaar cash
 
         // init word filter
         new WordFilter();
@@ -49,7 +51,14 @@ public final class Tropica extends JavaPlugin {
         new TropicaMenu();
 
         // init recipes
-        new RecipeHandler();
+        try {
+            new RecipeHandler();
+        } catch (Exception e) {
+
+        }
+
+        // init bazaar
+        new BazaarHandler();
 
         // register backpack handler
         new BackpackHandler();

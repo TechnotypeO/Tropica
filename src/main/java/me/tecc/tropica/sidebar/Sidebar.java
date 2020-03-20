@@ -59,14 +59,21 @@ public class Sidebar {
         DynamicScoreboard d = DynamicScoreboard.scoreboards.get(player.getUniqueId());
         int index = d.getFields().size();
 
-        d.updateField(index - 3, "Cash: ",
-                " &6"+TUtil.toFancyDouble(cash) + " &e(+"+TUtil.toFancyDouble(value)+")");
+        if (value > 0) {
+            d.updateField(index - 3, "Cash:",
+                    " &6" + TUtil.toFancyDouble(cash) + " &e(+" + TUtil.toFancyDouble(value) + ")");
+        } else {
+            d.updateField(index - 3, "Cash:",
+                    " &6" + TUtil.toFancyDouble(cash) + " &c(-" + TUtil.toFancyDouble(Math.abs(value)) + ")");
+
+        }
+
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 if (player.isOnline()) {
-                    d.updateField(index - 3, "Cash: ", " &6"+TUtil.toFancyDouble(wrapper.getDouble("cash")));
+                    d.updateField(index - 3, "Cash:", " &6"+TUtil.toFancyDouble(wrapper.getDouble("cash")));
                 }
             }
         }.runTaskLater(Tropica.getTropica(), 20*3);

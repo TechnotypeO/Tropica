@@ -35,3 +35,11 @@ commands:
     aliases:
       - h
   surface:
+  bazaar:
+    aliases:
+      - shop
+      - ah
+  search:
+  sell:
+    aliases:
+      - auction

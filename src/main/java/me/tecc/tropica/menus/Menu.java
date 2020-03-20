@@ -6,7 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Menu {
@@ -14,7 +14,7 @@ public class Menu {
     private final String name;
     private final Inventory inventory;
 
-    public static List<String> names = Arrays.asList("Collection Menu", "Tropica Menu");
+    public static List<String> names = new ArrayList<>();
 
     public Menu(int size, String name) {
         this.size = size;

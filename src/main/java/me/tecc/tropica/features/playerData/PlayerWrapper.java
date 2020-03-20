@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 /**
  * Very useful Wrapper for all kind of player data.
  * Create a new instance of this class along with your code
@@ -17,7 +19,8 @@ import org.bukkit.entity.Player;
 public class PlayerWrapper {
     private final PlayerFeature playerFeature;
     private final JsonObject jsonObject;
-    private Player player;
+    private UUID uuid = null;
+    private Player player = null;
 
     /**
      * Simply use this constructor to work along with player data.
@@ -96,5 +99,9 @@ public class PlayerWrapper {
 
     public PlayerFeature getPlayerFeature() {
         return playerFeature;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 }

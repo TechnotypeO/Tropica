@@ -243,4 +243,8 @@ public class CollectionManager {
             }
         });
     }
+
+    public CollectionFeature getCollectionCommand() {
+        return collectionCommand;
+    }
 }

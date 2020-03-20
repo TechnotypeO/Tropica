@@ -12,7 +12,9 @@ import me.tecc.tropica.menus.Menu;
 import me.tecc.tropica.sidebar.DynamicScoreboard;
 import me.tecc.tropica.sidebar.Rank;
 import me.tecc.tropica.sidebar.Sidebar;
+import me.tecc.tropica.storage.BazaarContainer;
 import me.tecc.tropica.storage.WordFilter;
+import me.tecc.tropica.texts.Text;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -58,8 +60,32 @@ public class BasicEventHandler implements Listener {
         player.getInventory().setItem(8, menu.getItemStack());
 
         new PlayerFeature(player, aBoolean -> {
-            Sidebar.sidebar(player);
-            DynamicScoreboard.updateTeamScoreboard();
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    Sidebar.sidebar(player);
+                    DynamicScoreboard.updateTeamScoreboard();
+
+                    String uuid = player.getUniqueId().toString();
+
+                    BazaarContainer.getInstance().getAsync(uuid, 0.0D, o -> {
+                        double cash = (double) o;
+                        if (cash > 0) {
+                            new Text("&e&lBAZAAR! &7You earned &6$"+TUtil.toFancyDouble(cash)+" &7while being offline!").send(player);
+                            PlayerWrapper playerWrapper = new PlayerWrapper(player);
+                            playerWrapper.setDouble("cash", playerWrapper.getDouble("cash") + cash);
+                            Sidebar.updateCash(playerWrapper, cash);
+
+                            player.playSound(player.getLocation(), Sound.ENTITY_WANDERING_TRADER_YES, 1.0f, 2.0f);
+
+                            BazaarContainer.getInstance().setAsync(uuid, 0.0, null);
+                        }
+
+                    });
+                }
+            }.runTask(Tropica.getTropica());
+
         });
 
     }
@@ -69,6 +95,13 @@ public class BasicEventHandler implements Listener {
         event.setQuitMessage(""); // making quit message invisible
         PlayerFeature.quit(event.getPlayer());
         TeamHandler.getInstance().unloadPlayer(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onSwapHands(PlayerSwapHandItemsEvent e) {
+        if (e.getPlayer().getInventory().getHeldItemSlot() == 8) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -227,8 +260,6 @@ public class BasicEventHandler implements Listener {
         ));
 
         player.spigot().sendMessage(textComponent);
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 1.5f);
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.25f);
 
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
         int knowledge = playerWrapper.getInt("knowledge") + 10;
