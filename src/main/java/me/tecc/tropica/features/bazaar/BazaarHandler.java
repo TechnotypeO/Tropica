@@ -704,6 +704,12 @@ public class BazaarHandler implements Listener, CommandExecutor {
                             }
 
                             auctions.add(jsonObject);
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                if (menuMap.containsKey(p.getUniqueId())) {
+                                    updateAuctions(menuMap.get(p.getUniqueId()), p);
+                                }
+                            }
+
 
                             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 2.0f);
 
