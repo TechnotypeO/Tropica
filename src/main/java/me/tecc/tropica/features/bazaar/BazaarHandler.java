@@ -632,12 +632,8 @@ public class BazaarHandler implements Listener, CommandExecutor {
             lore.add("&b➤ &a&lLowest");
         }
         lore.add("");
-        lore.add("&eClick to change!");
-        lore.add("");
-        lore.add("&9&lNOTE:");
-        lore.add("&7You can go up and down by");
-        lore.add("&aRight Clicking &7or &aLeft");
-        lore.add("&aClicking &7the item!");
+        lore.add("&eLeft-click to go down!");
+        lore.add("&6Right-click to go up!");
         sort.setLore(lore);
 
         menu.setSlot(41, sort);

@@ -31,7 +31,16 @@ public enum TropicaItems {
             "&7jumping to specify the destination.",
             "",
             "&ePlace on the ground!"
-    ).addEnchantment(Enchantment.ARROW_INFINITE, 1).setHideflags(true));
+    ).addEnchantment(Enchantment.ARROW_INFINITE, 1).setHideflags(true)),
+
+    ELEVATOR(new Item(Material.IRON_BLOCK, 1,
+            "&fElevator &7(Place Down)",
+            "Place at least 2 of these",
+            "to travel up and down with them.",
+            "",
+            "&9&lNOTE:",
+            "&aSneak &7to travel downwards, or &fJump",
+            "&7to travel upwards!"));
 
     private Item item;
 

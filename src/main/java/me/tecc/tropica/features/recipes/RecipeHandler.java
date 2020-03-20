@@ -75,6 +75,28 @@ public class RecipeHandler implements CommandExecutor {
         register("tropical_backpack", bambooBackpack.getItemStack(),
                 bambooBackpackRows, bambooBackpackMap, "backpack");
 
+        // Elevator
+        Item elevatorBlock = TropicaItems.ELEVATOR.item();
+
+        String[] elevatorRows = new String[] {
+                "III",
+                "DPD",
+                "III"
+        };
+
+        ItemStack iron_item = NBTEditor.createGameItem(Material.IRON_INGOT, 1);
+        ItemStack diamond_item = NBTEditor.createGameItem(Material.DIAMOND, 1);
+        ItemStack stickypiston_item = NBTEditor.createGameItem(Material.STICKY_PISTON, 1);
+
+        Map<Character, ItemStack> elevatorBlockMap = new HashMap<>();
+        elevatorBlockMap.put('I', iron_item);
+        elevatorBlockMap.put('D', diamond_item);
+        elevatorBlockMap.put('P', stickypiston_item);
+
+
+        register("elevator_block", elevatorBlock.getItemStack(),
+                elevatorRows, elevatorBlockMap, "elevator");
+
         // jump pad registration
         Item jumpPad = TropicaItems.JUMP_PAD.item();
 
