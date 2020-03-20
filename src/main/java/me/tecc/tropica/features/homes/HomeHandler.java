@@ -171,16 +171,16 @@ public class HomeHandler implements CommandExecutor, Listener {
 
 
                 } else {
-                    TextComponent textComponent = new TextComponent(TUtil.toColor("&c&lOOPS! &7Here's list of your homes: "));
-                    TextComponent empty = new TextComponent(TUtil.toColor(" &r &r &r "));
+                    TextComponent textComponent = new TextComponent(TUtil.toColor("&c&lOOPS! &7Here's list of your homes:"));
+                    TextComponent empty = new TextComponent(TUtil.toColor("\n"));
 
                     for (JsonElement jsonElement : jsonArray) {
                        JsonObject jsonObject = jsonElement.getAsJsonObject();
                        String name = jsonObject.get("name").getAsString();
-                       TextComponent textComponent1 = new TextComponent(TUtil.toColor("&6["+name.toUpperCase() +"&6]"));
+                       TextComponent textComponent1 = new TextComponent(TUtil.toColor("&9✥ &6"+name.toUpperCase()));
                        textComponent1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/home "+name));
                        textComponent1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                               new ComponentBuilder(TUtil.toColor("&bClick here to teleport to &e"+name+"&b home!")).create()));
+                               new ComponentBuilder(TUtil.toColor("&7Click here to teleport to &6"+name+"&7 home!")).create()));
 
                        textComponent.addExtra(empty);
                        textComponent.addExtra(textComponent1);

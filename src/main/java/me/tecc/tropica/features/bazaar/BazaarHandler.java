@@ -191,7 +191,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
                             TUtil.toColor("&e&lBAZAAR! &7Use &f/search (text) &7to search the bazaar!\n&bClick here to write the command faster!"));
                     textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/search "));
                     textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            new ComponentBuilder(TUtil.toColor("&7Yep, just &eclick&7 it!")).create()));
+                            new ComponentBuilder(TUtil.toColor("&c&lUSAGE: &7/search (text)")).create()));
 
                     player.spigot().sendMessage(textComponent);
 
@@ -424,7 +424,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
             List<String> lore = item.getLore();
             lore.add("");
-            lore.add("&e&m---------------------");
+            lore.add("&e&m                     ");
             lore.add("&7Cost: &6"+ TUtil.toFancyDouble(price)+" Cash");
             lore.add("");
             lore.add("&7You &b&lSELLING&7 this item &3:)");
@@ -556,7 +556,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
             List<String> lore = item.getLore();
             lore.add("");
-            lore.add("&e&m---------------------");
+            lore.add("&e&m                     ");
             lore.add("&7Seller: "+seller);
             lore.add("&7Cost: &6"+ TUtil.toFancyDouble(price)+" Cash");
             lore.add("");
@@ -611,28 +611,33 @@ public class BazaarHandler implements Listener, CommandExecutor {
         );
         List<String> lore = sort.getLore();
         if (bazaarFilter.getType() == 0) {
-            lore.add("&b➤ &a&lOldest added");
-            lore.add("&8Earliest added");
-            lore.add("&8Highest price");
-            lore.add("&8Lowest price");
+            lore.add("&b➤ &a&lOldest");
+            lore.add("&8Newest");
+            lore.add("&8Highest");
+            lore.add("&8Lowest");
         } else if (bazaarFilter.getType() == 1) {
-            lore.add("&8Oldest added");
-            lore.add("&b➤ &a&lEarliest added");
-            lore.add("&8Highest price");
-            lore.add("&8Lowest price");
+            lore.add("&8Oldest");
+            lore.add("&b➤ &a&lNewest");
+            lore.add("&8Highest");
+            lore.add("&8Lowest");
         } else if (bazaarFilter.getType() == 2) {
-            lore.add("&8Oldest added");
-            lore.add("&8Earliest added");
-            lore.add("&b➤ &a&lHighest price");
-            lore.add("&8Lowest price");
+            lore.add("&8Oldest");
+            lore.add("&8Newest");
+            lore.add("&b➤ &a&lHighest");
+            lore.add("&8Lowest");
         } else {
-            lore.add("&8Oldest added");
-            lore.add("&8Earliest added");
-            lore.add("&8Highest price");
-            lore.add("&b➤ &a&lLowest price");
+            lore.add("&8Oldest");
+            lore.add("&8Newest");
+            lore.add("&8Highest");
+            lore.add("&b➤ &a&lLowest");
         }
         lore.add("");
         lore.add("&eClick to change!");
+        lore.add("");
+        lore.add("&9&lNOTE:");
+        lore.add("&7You can go up and down by");
+        lore.add("&aRight Clicking &7or &aLeft");
+        lore.add("&aClicking &7the item!");
         sort.setLore(lore);
 
         menu.setSlot(41, sort);
