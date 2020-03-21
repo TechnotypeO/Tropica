@@ -1258,7 +1258,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
             final int slot = staticSlots[i];
             final BazaarItem bazaarItem = items.get(index);
-            final double price = type == 1 ? bazaarItem.getBuy() : bazaarItem.getSell() * stack;
+            final double price = (type == 1 ? bazaarItem.getBuy() : bazaarItem.getSell()) * stack;
 
             Item item;
 
