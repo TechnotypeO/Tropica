@@ -1,5 +1,9 @@
 package me.tecc.tropica;
 
+import me.tecc.tropica.Gamemode.GamemodeAdventure;
+import me.tecc.tropica.Gamemode.GamemodeCreative;
+import me.tecc.tropica.Gamemode.GamemodeSpectator;
+import me.tecc.tropica.Gamemode.GamemodeSurvival;
 import me.tecc.tropica.HelpCommands.HelpCommand;
 import me.tecc.tropica.commands.*;
 import me.tecc.tropica.events.BasicEventHandler;
@@ -78,6 +82,10 @@ public final class Tropica extends JavaPlugin {
         getCommand("enderchest").setExecutor(new EnderChestCommand());
         getCommand("craft").setExecutor(new CraftingCommand());
         getCommand("surface").setExecutor(new SurfaceCommand());
+        getCommand("gmspec").setExecutor(new GamemodeSpectator());
+        getCommand("gmc").setExecutor(new GamemodeCreative());
+        getCommand("gma").setExecutor(new GamemodeAdventure());
+        getCommand("gms").setExecutor(new GamemodeSurvival());
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(player, "");
