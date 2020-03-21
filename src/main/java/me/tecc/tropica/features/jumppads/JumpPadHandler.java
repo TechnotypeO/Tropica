@@ -144,7 +144,7 @@ public class JumpPadHandler implements Listener {
         if (!runnableMap.containsKey(jumpPad)) {
 
             JumpPadRunnable jumpPadRunnable = new JumpPadRunnable(jumpPad.getLocation());
-            jumpPadRunnable.runTaskTimer(Tropica.getTropica(), 0L, 3L);
+            jumpPadRunnable.runTaskTimer(Tropica.getTropica(), 0L, 40L);
             runnableMap.put(jumpPad, jumpPadRunnable);
         }
     }

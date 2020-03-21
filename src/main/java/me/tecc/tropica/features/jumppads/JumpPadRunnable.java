@@ -16,7 +16,7 @@ public class JumpPadRunnable extends BukkitRunnable {
         Location l =  location.clone().add(0.5, 0.775, 0.5);
 
         if (l.getChunk().isLoaded()) {
-            location.getWorld().spawnParticle(Particle.CLOUD, l, 4, 0.25, 0 ,0.25, 0);
+            location.getWorld().spawnParticle(Particle.CLOUD, l, 10, 0.25, 0 ,0.25, 0);
         }
 
     }
