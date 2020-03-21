@@ -1,4 +1,4 @@
-package me.tecc.tropica.commands;
+package me.tecc.tropica.HelpCommands;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -35,7 +35,7 @@ public class HelpCommand implements CommandExecutor {
             player.spigot().sendMessage(two);
             player.sendMessage("");
             net.md_5.bungee.api.chat.TextComponent three = new TextComponent(toColor("&e3&f. /abandonallclaims &f- &7Unclaim all Land you ever claimed. &f(Hover to type)"));
-            three.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(toColor("&b&lClick to type in chat &7(/gms)")).create()));
+            three.setHoverEvent(new HoverEvent(HoverEvent.Action., new ComponentBuilder(toColor("&b&lClick to type in chat &7(/gms)")).create()));
             three.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/abandonallclaims"));
             player.spigot().sendMessage(three);
             player.sendMessage("");
