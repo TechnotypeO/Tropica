@@ -1,9 +1,10 @@
 package me.tecc.tropica.features.bazaar;
 
+import me.tecc.tropica.TUtil;
 import org.bukkit.Material;
 
 public enum BazaarCategory {
-    PLANTS(Material.WHEAT, "&aPlants & Foods &8➔ &eClick",
+    PLANTS(Material.WHEAT, "&aPlants & Foods",
             "&8Farming",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
@@ -11,7 +12,7 @@ public enum BazaarCategory {
             "&7things that can be eaten."
     ),
 
-    BLOCKS(Material.OAK_LOG,"&6Blocks &8➔ &eClick",
+    BLOCKS(Material.OAK_LOG,"&6Blocks",
             "&8Building",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
@@ -19,14 +20,14 @@ public enum BazaarCategory {
             "&7you make your builds look stunning."),
 
 
-    MINERALS(Material.DIAMOND,"&bMinerals &8➔ &eClick",
+    MINERALS(Material.DIAMOND,"&bMinerals",
             "&8Mining",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
             "&7Need diamonds, gold or iron?",
             "&7Great place for miners."),
 
-    DROPS(Material.ROTTEN_FLESH,"&cMob Drops &8➔ &eClick",
+    DROPS(Material.ROTTEN_FLESH,"&cMob Drops",
             "&8Hunting",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
@@ -34,7 +35,7 @@ public enum BazaarCategory {
             "&7items that are dropped from mobs."),
 
 
-    VALUABLES(Material.TOTEM_OF_UNDYING,"&dValuable Items &8➔ &eClick",
+    VALUABLES(Material.TOTEM_OF_UNDYING,"&dValuable Items",
             "&8Riches & Swag",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
@@ -52,7 +53,7 @@ public enum BazaarCategory {
     }
 
     public String getPrefix() {
-        return prefix;
+        return TUtil.toColor(prefix);
     }
 
     public String[] getLore() {

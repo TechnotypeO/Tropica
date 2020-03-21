@@ -1,6 +1,7 @@
 package me.tecc.tropica.features.bazaar;
 
 import me.tecc.tropica.features.collection.CollectionManager;
+import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.items.sCoder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ public class BazaarItem {
         this.mat = mat;
         this.bazaarCategory = c;
         this.cost = cost;
-        this.nbt = sCoder.itemStackArrayToBase64(new ItemStack[]{new ItemStack(mat)});
+        this.nbt = sCoder.itemStackArrayToBase64(new ItemStack[]{NBTEditor.createGameItem(mat, 1)});
 
         if (mat != Material.AIR) {
             LinkedList<BazaarItem> list = cachedGroups.getOrDefault(c, new LinkedList<>());
@@ -170,12 +171,6 @@ public class BazaarItem {
         for (Material m : CollectionManager.getInstance().getCollectionCommand().getListOfMaterials()) {
             if (m.isItem() && m.toString().contains("_GLAZED_TERRACOTTA")) {
                 new BazaarItem(m, 200);
-            }
-        }
-
-        for (Material m : CollectionManager.getInstance().getCollectionCommand().getListOfMaterials()) {
-            if (m.isItem() && m.toString().contains("_WOOL")) {
-                new BazaarItem(m, 10);
             }
         }
 
