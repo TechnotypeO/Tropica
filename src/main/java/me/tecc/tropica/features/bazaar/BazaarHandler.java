@@ -650,6 +650,10 @@ public class BazaarHandler implements Listener, CommandExecutor {
             menu.setSlot(staticSlots[i], new Item(Material.AIR));
         }
 
+        for (int i = 0; i < 7; i++) {
+            menu.setSlot(37 + i, staticBlack);
+        }
+
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
         double currentCash = playerWrapper.getDouble("cash");
 
@@ -771,10 +775,6 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
         menu.setSlot(41, sort);
         menu.setSlot(39, search);
-
-        for (int i = 0; i < 7; i++) {
-            menu.setSlot(37 + i, staticBlack);
-        }
 
         //pages start
         int auctionsSize = auctions.size();
@@ -947,6 +947,10 @@ public class BazaarHandler implements Listener, CommandExecutor {
         BazaarCategory[] categories = BazaarCategory.values();
         final int type = menu.getName().equalsIgnoreCase("Buy Instantly") ? 1 : 0;
 
+        for (int i = 0; i < 7; i++) {
+            menu.setSlot(37 + i, staticBlack);
+        }
+
         if (type == 1) {
             menu.setSlot(2, new Item(Material.ARROW, 1, "&6Return &8➔ &eClick"));
 
@@ -1103,10 +1107,6 @@ public class BazaarHandler implements Listener, CommandExecutor {
             item.setItemStack(NBTEditor.addString(item.getItemStack(), "stack", String.valueOf(stack)));
 
             menu.setSlot(slot, item);
-        }
-
-        for (int i = 0; i < 7; i++) {
-            menu.setSlot(37 + i, staticBlack);
         }
 
         //pages start
