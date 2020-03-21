@@ -24,7 +24,7 @@ public class BazaarItem {
         this.cost = cost;
         this.nbt = sCoder.itemStackArrayToBase64(new ItemStack[]{new ItemStack(mat)});
 
-        if (mat != null) {
+        if (mat != Material.AIR) {
             LinkedList<BazaarItem> list = cachedGroups.getOrDefault(c, new LinkedList<>());
             list.add(this);
             cachedGroups.put(bazaarCategory, list);
@@ -79,7 +79,7 @@ public class BazaarItem {
         new BazaarItem(Material.MELON_SEEDS, 2);
         new BazaarItem(Material.BROWN_MUSHROOM, 5);
         new BazaarItem(Material.BROWN_MUSHROOM_BLOCK, 45);
-        new BazaarItem(Material.RED_MUSHROOM_BLOCK, 5);
+        new BazaarItem(Material.RED_MUSHROOM, 5);
         new BazaarItem(Material.RED_MUSHROOM_BLOCK, 45);
         new BazaarItem(Material.SUGAR_CANE, 20);
         new BazaarItem(Material.SUGAR, 20);

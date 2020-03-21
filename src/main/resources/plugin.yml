@@ -48,18 +48,18 @@ commands:
     usage: /<command>
     aliases:
       - gm3
-    gmc:
-      description: Gamemode Creative!
-      usage: /<command>
-      aliases:
-        - gm1
-    gma:
-      description: Gamemode Adventure!
-      usage: /<command>
-      aliases:
-        - gm2
-    gms:
-      description: Gamemode Survival!
-      usage: /<command>
-      aliases:
-        - gm0
+  gmc:
+    description: Gamemode Creative!
+    usage: /<command>
+    aliases:
+      - gm1
+  gma:
+    description: Gamemode Adventure!
+    usage: /<command>
+    aliases:
+      - gm2
+  gms:
+    description: Gamemode Survival!
+    usage: /<command>
+    aliases:
+      - gm0

@@ -1,7 +1,9 @@
 package me.tecc.tropica.features.bazaar;
 
+import org.bukkit.Material;
+
 public enum BazaarCategory {
-    PLANTS("&aPlants & Foods &8➔ &eClick",
+    PLANTS(Material.WHEAT, "&aPlants & Foods &8➔ &eClick",
             "&8Farming",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
@@ -9,7 +11,7 @@ public enum BazaarCategory {
             "&7things that can be eaten."
     ),
 
-    BLOCKS("&6Blocks &8➔ &eClick",
+    BLOCKS(Material.OAK_LOG,"&6Blocks &8➔ &eClick",
             "&8Building",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
@@ -17,14 +19,14 @@ public enum BazaarCategory {
             "&7you make your builds look stunning."),
 
 
-    MINERALS("&bMinerals &8➔ &eClick",
+    MINERALS(Material.DIAMOND,"&bMinerals &8➔ &eClick",
             "&8Mining",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
             "&7Need diamonds, gold or iron?",
             "&7Great place for miners."),
 
-    DROPS("&cMob Drops &8➔ &eClick",
+    DROPS(Material.ROTTEN_FLESH,"&cMob Drops &8➔ &eClick",
             "&8Hunting",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
@@ -32,17 +34,19 @@ public enum BazaarCategory {
             "&7items that are dropped from mobs."),
 
 
-    VALUABLES("&dValuable Items &8➔ &eClick",
+    VALUABLES(Material.TOTEM_OF_UNDYING,"&dValuable Items &8➔ &eClick",
             "&8Riches & Swag",
             "",
             "&8&m---&r &7[&e&lINFORMATION&7] &8&m---",
             "&7Place made for wealthy players.",
             "&7Become one by playing on the server."); //nice advertising
 
+    private Material material;
     private final String prefix;
     private final String[] lore;
 
-    BazaarCategory(String prefix, String... lore) {
+    BazaarCategory(Material material, String prefix, String... lore) {
+        this.material = material;
         this.prefix = prefix;
         this.lore = lore;
     }
@@ -53,5 +57,9 @@ public enum BazaarCategory {
 
     public String[] getLore() {
         return lore;
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 }

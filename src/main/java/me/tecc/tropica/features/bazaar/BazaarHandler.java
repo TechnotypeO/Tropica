@@ -65,6 +65,11 @@ public class BazaarHandler implements Listener, CommandExecutor {
             19, 20, 21, 22, 23, 24, 25,
             28, 29, 30, 31, 32, 33, 34,
     };
+
+    private final int[] staticCategories = new int[] {
+            1, 2, 3, 4, 5, 6
+    };
+
     private final int staticSize = 21;
 
 
@@ -122,7 +127,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
     }
 
     private void initSellAndBuy() {
-        new BazaarItem(null, 0);
+        new BazaarItem(Material.AIR, 0);
 
         BazaarItem.register();
         isLoaded = true;
@@ -461,12 +466,20 @@ public class BazaarHandler implements Listener, CommandExecutor {
                 }
 
                 if (item.getName().equalsIgnoreCase(TUtil.toColor("&bPrevious Page &8➔ &eClick"))) {
-                    int currentPage = pages.getOrDefault(player.getUniqueId(), 1);
-                    pages.put(player.getUniqueId(), currentPage - 1);
+                    BazaarCategory bazaarCategory = categoryMap.get(player.getUniqueId());
+                    Map<BazaarCategory, JsonObject> map = marketData.get(player.getUniqueId());
+
+                    JsonObject jsonObject = map.get(bazaarCategory);
+                    int currentPage = jsonObject.get("page").getAsInt();
+
+                    currentPage -= 1;
+                    jsonObject.addProperty("page", currentPage);
+
+                    map.put(bazaarCategory, jsonObject);
+                    marketData.put(player.getUniqueId(), map);
 
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
-                    openMenu(player, false);
-                    return;
+                    updateMarket(marketMenus.get(player.getUniqueId()).get(categoryMap.get(player.getUniqueId())), player);
                 }
 
 
@@ -894,14 +907,12 @@ public class BazaarHandler implements Listener, CommandExecutor {
             menus = marketMenus.get(player.getUniqueId());
         }
 
-        if (menus.containsKey(bazaarCategory)) {
-            menu = menus.get(bazaarCategory);
-        } else {
-            menu = new Menu(6*9, name);
-            menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));
-            menus.put(bazaarCategory, menu);
-        }
+        menu = new Menu(6*9, name);
+        menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));
+        menus.put(bazaarCategory, menu);
+
         marketMenus.put(player.getUniqueId(), menus);
+
         updateMarket(menu, player);
 
         menu.open(player, b);
@@ -910,6 +921,34 @@ public class BazaarHandler implements Listener, CommandExecutor {
     private void updateMarket(Menu menu, Player player) {
         BazaarCategory bazaarCategory = categoryMap.get(player.getUniqueId());
         Map<BazaarCategory, JsonObject> dataMap;
+
+        BazaarCategory[] categories = BazaarCategory.values();
+        final int type = menu.getName().equalsIgnoreCase("Buy Instantly") ? 1 : 0;
+
+        for (int i = 0; i < 5; i++) {
+            BazaarCategory bazaarCategory1 = categories[i];
+            int slot = i;
+
+            if (type == 1) {
+                slot += 3;
+            } else {
+                slot += 2;
+            }
+
+            Item item = new Item(bazaarCategory1.getMaterial(), 1, bazaarCategory1.getPrefix(), bazaarCategory1.getLore());
+            List<String> lore = item.getLore();
+            lore.add("");
+            if (bazaarCategory.equals(bazaarCategory1)) {
+                lore.add("&aCurrently viewing!");
+                item.addEnchantment(Enchantment.DURABILITY, 1);
+                item.setHideflags(true);
+            } else {
+                lore.add("&eClick to browse!");
+            }
+            item.setLore(lore);
+
+            menu.setSlot(slot, item);
+        }
 
         if (marketData.containsKey(player.getUniqueId())) {
             dataMap = marketData.get(player.getUniqueId());
@@ -938,7 +977,6 @@ public class BazaarHandler implements Listener, CommandExecutor {
         }
 
         LinkedList<BazaarItem> items = BazaarItem.getGroup(bazaarCategory);
-        int type = menu.getName().equalsIgnoreCase("Buy Instantly") ? 1 : 0;
 
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
         double currentCash = playerWrapper.getDouble("cash");
