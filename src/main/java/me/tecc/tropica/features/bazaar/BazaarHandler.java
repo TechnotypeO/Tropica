@@ -441,7 +441,8 @@ public class BazaarHandler implements Listener, CommandExecutor {
                 Item item = new Item(e.getCurrentItem());
 
 
-                if (item.getName().equalsIgnoreCase(TUtil.toColor("&cGo Back"))) {
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&cGo Back")) ||
+                        item.getName().equalsIgnoreCase(TUtil.toColor("&6Return &8➔ &eClick"))) {
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
                     openMenu(player, false);
                     return;
@@ -482,6 +483,17 @@ public class BazaarHandler implements Listener, CommandExecutor {
                     updateMarket(marketMenus.get(player.getUniqueId()).get(categoryMap.get(player.getUniqueId())), player);
                 }
 
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&aBuy Instantly"))) {
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                    openMarketMenu(player, 1, false);
+                    return;
+                }
+
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&aSell Instantly"))) {
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                    openMarketMenu(player, 0, false);
+                    return;
+                }
 
 
             }
@@ -529,6 +541,10 @@ public class BazaarHandler implements Listener, CommandExecutor {
             menu = personalMenuMap.get(player.getUniqueId());
         }
 
+        for (int i = 0; i < 45; i++) {
+            menu.setSlot(i, new Item(Material.AIR));
+        }
+
         int slot = -1;
         int i = 0;
         for (JsonObject jsonObject : auctions) {
@@ -571,6 +587,9 @@ public class BazaarHandler implements Listener, CommandExecutor {
             i++;
         }
 
+        if (menu.getInventory().getViewers().size() >= 1) {
+            return;
+        }
         menu.open(player, b);
     }
 
@@ -614,6 +633,9 @@ public class BazaarHandler implements Listener, CommandExecutor {
         }
         this.updateAuctions(menu, player);
 
+        if (menu.getInventory().getViewers().size() >= 1) {
+            return;
+        }
         menu.open(player, b);
     }
 
@@ -925,6 +947,26 @@ public class BazaarHandler implements Listener, CommandExecutor {
         BazaarCategory[] categories = BazaarCategory.values();
         final int type = menu.getName().equalsIgnoreCase("Buy Instantly") ? 1 : 0;
 
+        if (type == 1) {
+            menu.setSlot(2, new Item(Material.ARROW, 1, "&6Return &8➔ &eClick"));
+
+            menu.setSlot(6, new Item(Material.HOPPER_MINECART, 1,
+                    "&aSell Instantly",
+                    "&7Needing to sell some items?",
+                    "&7Do it here and earn &6Cash&7.",
+                    "",
+                    "&eClick to browse!"));
+        } else {
+            menu.setSlot(6, new Item(Material.ARROW, 1, "&6Return &8➔ &eClick"));
+
+            menu.setSlot(2, new Item(Material.GOLD_INGOT, 1,
+                    "&aBuy Instantly",
+                    "&7A place to spend your &6Cash&7.",
+                    "&7There is mostly everything you need.",
+                    "",
+                    "&eClick to browse!"));
+        }
+
         for (int i = 0; i < 5; i++) {
             BazaarCategory bazaarCategory1 = categories[i];
             int slot = i;
@@ -932,7 +974,8 @@ public class BazaarHandler implements Listener, CommandExecutor {
             if (type == 1) {
                 slot += 3;
             } else {
-                slot += 2;
+                slot += 1;
+                bazaarCategory1 = categories[categories.length - 1 - i];
             }
 
             Item item = new Item(bazaarCategory1.getMaterial(), 1, bazaarCategory1.getPrefix(), bazaarCategory1.getLore());
