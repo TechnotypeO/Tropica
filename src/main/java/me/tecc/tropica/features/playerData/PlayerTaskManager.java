@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Saved players data every 5 minutes
+ * Saved players data every 1 minute
  */
 public class PlayerTaskManager extends BukkitRunnable {
     private static PlayerTaskManager instance;

@@ -71,8 +71,12 @@ public class CollectionFeature implements CommandExecutor, Listener {
                     continue;
                 }
 
+
                 String s = m.toString();
                 if (s.contains("_SPAWN_EGG") || s.contains("COMMAND_BLOCK")) {
+                    continue;
+                }
+                if (s.contains("LEGACY")) {
                     continue;
                 }
                 if (s.contains("INFESTED_") || s.contains("STRUCTURE_")) {

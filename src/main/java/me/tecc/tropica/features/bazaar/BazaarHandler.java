@@ -23,10 +23,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,8 +45,14 @@ import java.util.function.Consumer;
 public class BazaarHandler implements Listener, CommandExecutor {
     private static BazaarHandler bazaarHandler;
     private final BazaarRunnable bazaarRunnable;
+
     private LinkedHashMap<UUID, Menu> menuMap = new LinkedHashMap<>();
+    private LinkedHashMap<UUID, Menu> personalMenuMap = new LinkedHashMap<>();
     private LinkedList<JsonObject> auctions = new LinkedList<>();
+
+    private LinkedHashMap<UUID, BazaarCategory> categoryMap = new LinkedHashMap<>();
+    private LinkedHashMap<UUID, Map<BazaarCategory, Menu>> marketMenus = new LinkedHashMap<>();
+    private LinkedHashMap<UUID, Map<BazaarCategory, JsonObject>> marketData = new LinkedHashMap<>();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final double MAX_PRICE = 1000000000000.0D;
@@ -83,10 +86,10 @@ public class BazaarHandler implements Listener, CommandExecutor {
         Tropica.getTropica().getCommand("search").setExecutor(this);
         Tropica.getTropica().getCommand("sell").setExecutor(this);
 
-        this.initAuctions();
+        this.initBazaar();
     }
 
-    private void initAuctions() {
+    private void initBazaar() {
         PublicContainer.getInstance()
                 .getAsync("bazaar", "", new Consumer<Object>() {
             @Override
@@ -106,10 +109,23 @@ public class BazaarHandler implements Listener, CommandExecutor {
                     auctions.add(jsonElement.getAsJsonObject());
                 }
 
-                isLoaded = true;
+                new BukkitRunnable() {
+
+                    @Override
+                    public void run() {
+                        initSellAndBuy();
+                    }
+                }.runTask(Tropica.getTropica());
 
             }
         });
+    }
+
+    private void initSellAndBuy() {
+        new BazaarItem(null, 0);
+
+        BazaarItem.register();
+        isLoaded = true;
     }
 
     @EventHandler
@@ -126,7 +142,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
                     pages.put(player.getUniqueId(), currentPage + 1);
 
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
-                    openMenu(player, false);
+                    updateAuctions(menuMap.get(player.getUniqueId()), player);
                     return;
                 }
 
@@ -135,7 +151,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
                     pages.put(player.getUniqueId(), currentPage - 1);
 
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
-                    openMenu(player, false);
+                    updateAuctions(menuMap.get(player.getUniqueId()), player);
                     return;
                 }
 
@@ -204,6 +220,18 @@ public class BazaarHandler implements Listener, CommandExecutor {
                     return;
                 }
 
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&aBuy Instantly"))) {
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                    openMarketMenu(player, 1, false);
+                    return;
+                }
+
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&aSell Instantly"))) {
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                    openMarketMenu(player, 0, false);
+                    return;
+                }
+
                 if (isAuctionSlot(e.getRawSlot())) {
                     boolean canBuy = NBTEditor.hasString(item.getItemStack(), "true");
 
@@ -229,13 +257,18 @@ public class BazaarHandler implements Listener, CommandExecutor {
                                     showItem.append("\n").append(line);
                                 }
                             }
-                            showItem.append("\n");
-                            showItem.append("\n&8Amount: x").append(boughtItem.getAmount());
+                            showItem.append("\n&9&m+                      +");
+                            showItem.append("\n &r &r &8Amount: x").append(boughtItem.getAmount());
+                            showItem.append("\n &r &r &8Cash: &6$").append(TUtil.toFancyDouble(price));
 
                             auctions.remove(index);
 
                             executorService.execute(() -> {
                                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+
+                                showItem.append("\n &r &r &8Seller: &f").append(offlinePlayer.getName());
+                                showItem.append("\n&9&m+                      +");
+
                                 if (offlinePlayer.isOnline()) {
                                     Player p = offlinePlayer.getPlayer();
 
@@ -264,7 +297,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
                                             Sidebar.updateCash(playerWrapper, price);
 
                                             if (p.getOpenInventory() != null) {
-                                                if (p.getOpenInventory().getTitle().equalsIgnoreCase("Items Management")) {
+                                                if (p.getOpenInventory().getTitle().equalsIgnoreCase("Item Management")) {
                                                     openCurrentItems(p, false);
                                                 }
                                             }
@@ -324,7 +357,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
             }
             return;
         }
-        if (e.getView().getTitle().equalsIgnoreCase("Items Management")) {
+        if (e.getView().getTitle().equalsIgnoreCase("Item Management")) {
             e.setCancelled(true);
 
             if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
@@ -344,6 +377,10 @@ public class BazaarHandler implements Listener, CommandExecutor {
                     JsonObject jsonObject = auctions.get(index);
                     String nbt = jsonObject.get("item").getAsString();
                     UUID uuid = UUID.fromString(jsonObject.get("uuid").getAsString());
+                    double views = 0;
+                    if (jsonObject.has("views")) {
+                        views = jsonObject.get("views").getAsDouble();
+                    }
 
                     Item boughtItem = null;
                     try {
@@ -355,8 +392,11 @@ public class BazaarHandler implements Listener, CommandExecutor {
                                 showItem.append("\n").append(line);
                             }
                         }
-                        showItem.append("\n");
-                        showItem.append("\n&8Amount: x").append(boughtItem.getAmount());
+                        showItem.append("\n&9&m+                      +");
+                        showItem.append("\n &r &r &8Amount: x").append(boughtItem.getAmount());
+                        showItem.append("\n &r &r &8Cash: &6$").append(TUtil.toFancyDouble(price));
+                        showItem.append("\n &r &r &8Views: &b").append(views);
+                        showItem.append("\n&9&m+                      +");
 
                         auctions.remove(index);
 
@@ -385,7 +425,57 @@ public class BazaarHandler implements Listener, CommandExecutor {
                     }
                 }
             }
+            return;
         }
+
+        if (e.getView().getTitle().equalsIgnoreCase("Buy Instantly") ||
+                e.getView().getTitle().equalsIgnoreCase("Sell Instantly")) {
+            e.setCancelled(true);
+
+            if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
+                Item item = new Item(e.getCurrentItem());
+
+
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&cGo Back"))) {
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                    openMenu(player, false);
+                    return;
+                }
+
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&bNext Page &8➔ &eClick"))) {
+                    BazaarCategory bazaarCategory = categoryMap.get(player.getUniqueId());
+                    Map<BazaarCategory, JsonObject> map = marketData.get(player.getUniqueId());
+
+                    JsonObject jsonObject = map.get(bazaarCategory);
+                    int currentPage = jsonObject.get("page").getAsInt();
+
+                    currentPage += 1;
+                    jsonObject.addProperty("page", currentPage);
+
+                    map.put(bazaarCategory, jsonObject);
+                    marketData.put(player.getUniqueId(), map);
+
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                    updateMarket(marketMenus.get(player.getUniqueId()).get(categoryMap.get(player.getUniqueId())), player);
+                    return;
+                }
+
+                if (item.getName().equalsIgnoreCase(TUtil.toColor("&bPrevious Page &8➔ &eClick"))) {
+                    int currentPage = pages.getOrDefault(player.getUniqueId(), 1);
+                    pages.put(player.getUniqueId(), currentPage - 1);
+
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1.0f, 1.5f);
+                    openMenu(player, false);
+                    return;
+                }
+
+
+
+            }
+            return;
+        }
+
+
     }
 
     private boolean isAuctionSlot(int rawSlot) {
@@ -399,7 +489,32 @@ public class BazaarHandler implements Listener, CommandExecutor {
     }
 
     private void openCurrentItems(Player player, boolean b) {
-        Menu menu = new Menu(6*9, "Items Management");
+        Menu menu;
+
+        if (!personalMenuMap.containsKey(player.getUniqueId())) {
+            menu = new Menu(6*9, "Item Management");
+
+            menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));
+
+            menu.setSlot(51, new Item(Material.PAPER, 1, "&eHow to sell item(s)?",
+                    "&8Tutorial",
+                    "",
+                    "&3&lSELLING ITEMS!",
+                    "&e> &bUse &f/sell (price) &bin the chat,",
+                    "&bwhile holding &aitem &byou want to sell!",
+                    "",
+                    "&3&lCANCEL PART!",
+                    "&e> &bIf you wish to &ctake &bone of your",
+                    "&bauctions &cdown&b, you must use this menu.",
+                    "&bClick at the item you want to cancel!",
+                    "",
+                    "&7Auctions can get you a lot of &6Cash&7!")
+                    .addEnchantment(Enchantment.DURABILITY, 1).setHideflags(true));
+
+            personalMenuMap.put(player.getUniqueId(), menu);
+        } else {
+            menu = personalMenuMap.get(player.getUniqueId());
+        }
 
         int slot = -1;
         int i = 0;
@@ -412,6 +527,10 @@ public class BazaarHandler implements Listener, CommandExecutor {
             }
 
             final double price = jsonObject.get("price").getAsDouble();
+            double views = 0;
+            if (jsonObject.has("views")) {
+                views = jsonObject.get("views").getAsDouble();
+            }
 
             Item item;
             try {
@@ -426,6 +545,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
             lore.add("");
             lore.add("&e&m                     ");
             lore.add("&7Cost: &6"+ TUtil.toFancyDouble(price)+" Cash");
+            lore.add("&7This offer was seen: &b"+TUtil.toFancyDouble(views) + " times");
             lore.add("");
             lore.add("&7You &b&lSELLING&7 this item &3:)");
             lore.add("&eClick to cancel the auction!");
@@ -437,23 +557,6 @@ public class BazaarHandler implements Listener, CommandExecutor {
             menu.setSlot(i, item);
             i++;
         }
-
-        menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));
-
-        menu.setSlot(51, new Item(Material.PAPER, 1, "&eHow to sell item(s)?",
-                "&8Tutorial",
-                "",
-                "&3&lSELLING ITEMS!",
-                "&e> &bUse &f/sell (price) &bin the chat,",
-                "&bwhile holding &aitem &byou want to sell!",
-                "",
-                "&3&lCANCEL PART!",
-                "&e> &bIf you wish to &ctake &bone of your",
-                "&bauctions &cdown&b, you must use this menu.",
-                "&bClick at the item you want to cancel!",
-                "",
-                "&7Auctions can get you a lot of &6Cash&7!")
-                .addEnchantment(Enchantment.DURABILITY, 1).setHideflags(true));
 
         menu.open(player, b);
     }
@@ -469,52 +572,34 @@ public class BazaarHandler implements Listener, CommandExecutor {
         if (!menuMap.containsKey(player.getUniqueId())) {
             menu = new Menu(6*9, "Bazaar the Tropical Market");
 
-            menu.setSlot(3, new Item(Material.GOLD_INGOT, 1,
-                    "&aBuy",
-                    "&7In this place you can buy",
-                    "&7mostly everything you need.",
+            menu.setSlot(2, new Item(Material.GOLD_INGOT, 1,
+                    "&aBuy Instantly",
+                    "&7A place to spend your &6Cash&7.",
+                    "&7There is mostly everything you need.",
                     "",
                     "&eClick to browse!"));
 
-            menu.setSlot(5, new Item(Material.HOPPER_MINECART, 1,
-                    "&aSell",
-                    "&7In this place you can sell",
-                    "&7your items to earn &6Cash&7.",
+            menu.setSlot(6, new Item(Material.HOPPER_MINECART, 1,
+                    "&aSell Instantly",
+                    "&7Needing to sell some items?",
+                    "&7Do it here and earn &6Cash&7.",
                     "",
                     "&eClick to browse!"));
+
             menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));
 
-            menu.setSlot(26, new Item(Material.CHEST, 1, "&aItems Management",
-                    "&7Manage the items you're selling.",
-                    "&aPut up &7new auctions or &ccancel&7 old ones.",
+            menu.setSlot(26, new Item(Material.CHEST, 1, "&aItem Management",
+                    "&7You can manage your auction here.",
+                    "&7The best way of earning &6Cash&7.",
                     "",
-                    "&eClick to browse!"));
+                    "&eClick to manage!"));
 
             menuMap.put(player.getUniqueId(), menu);
 
         } else {
             menu = menuMap.get(player.getUniqueId());
         }
-
-        for (int i = 0; i < 7; i++) {
-            menu.setSlot(37 + i, staticBlack);
-        }
-
-        //pages start
-        int currentPage = pages.getOrDefault(player.getUniqueId(), 1);
-        int auctionsSize = auctions.size();
-
-        if ((double)auctionsSize / 21 > (double)currentPage) {
-            menu.setSlot(43, staticNext);
-        }
-
-        if (currentPage > 1) {
-            menu.setSlot(37, staticPrevious);
-        }
-        //pages end
-
         this.updateAuctions(menu, player);
-
 
         menu.open(player, b);
     }
@@ -524,11 +609,14 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
         int currentPage = pages.getOrDefault(uniqueId, 1);
         BazaarFilter bazaarFilter = filter.getOrDefault(uniqueId, new BazaarFilter("", 0));
-        LinkedList<JsonObject> jsonObjects = this.getAuctionsByFilter(bazaarFilter.getType());
+        LinkedList<JsonObject> jsonObjects = this.getAuctionsByFilter(bazaarFilter.getSearch(), bazaarFilter.getType());
 
         for (int i = 0; i < 21; i++) {
             menu.setSlot(staticSlots[i], new Item(Material.AIR));
         }
+
+        PlayerWrapper playerWrapper = new PlayerWrapper(player);
+        double currentCash = playerWrapper.getDouble("cash");
 
         for (int i = 0; i < staticSize; i++) {
             final int index = i + (currentPage - 1) * staticSize;
@@ -540,6 +628,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
             final JsonObject jsonObject = jsonObjects.get(index);
             final double price = jsonObject.get("price").getAsDouble();
             final String seller = jsonObject.get("seller").getAsString();
+            boolean isOwner = player.getUniqueId().toString().equalsIgnoreCase(jsonObject.get("uuid").getAsString());
 
             Item item;
 
@@ -548,10 +637,6 @@ public class BazaarHandler implements Listener, CommandExecutor {
             } catch (Exception e) {
                 item = new Item(Material.BARRIER, 1, "&cError!");
             }
-
-            PlayerWrapper playerWrapper = new PlayerWrapper(player);
-            double currentCash = playerWrapper.getDouble("cash");
-
             item.setName(jsonObject.get("name").getAsString());
 
             List<String> lore = item.getLore();
@@ -561,7 +646,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
             lore.add("&7Cost: &6"+ TUtil.toFancyDouble(price)+" Cash");
             lore.add("");
 
-            if (!player.getUniqueId().toString().equalsIgnoreCase(jsonObject.get("uuid").getAsString())) {
+            if (!isOwner) {
 
                 if (currentCash >= price) {
                     lore.add("&7You &a&lCAN&7 afford this &a:)");
@@ -579,9 +664,22 @@ public class BazaarHandler implements Listener, CommandExecutor {
             item.setLore(lore);
             item.setItemStack(NBTEditor.addString(item.getItemStack(), "cost", String.valueOf(price)));
             item.setItemStack(NBTEditor.addString(item.getItemStack(), "index", String.valueOf(index)));
-            if (!player.getUniqueId().toString().equalsIgnoreCase(jsonObject.get("uuid").getAsString())) {
-                item.setItemStack(NBTEditor.addString(item.getItemStack(), "true", String.valueOf(true)));
+            if (!isOwner) {
+                if (currentCash >= price) {
+                    item.setItemStack(NBTEditor.addString(item.getItemStack(), "true", String.valueOf(true)));
+                }
+
+                //add views
+                double views = 0;
+
+                if (jsonObject.has("views")) {
+                    views = jsonObject.get("views").getAsDouble();
+                }
+
+                views += 1;
+                jsonObject.addProperty("views", views);
             }
+
 
             menu.setSlot(slot, item);
         }
@@ -638,13 +736,48 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
         menu.setSlot(41, sort);
         menu.setSlot(39, search);
+
+        for (int i = 0; i < 7; i++) {
+            menu.setSlot(37 + i, staticBlack);
+        }
+
+        //pages start
+        int auctionsSize = auctions.size();
+
+        if ((double)auctionsSize / 21 > (double)currentPage) {
+            menu.setSlot(43, staticNext);
+        }
+
+        if (currentPage > 1) {
+            menu.setSlot(37, staticPrevious);
+        }
+        //pages end
     }
 
-    private LinkedList<JsonObject> getAuctionsByFilter(int type) {
+    private LinkedList<JsonObject> getAuctionsByFilter(String search, int type) {
         LinkedList<JsonObject> jsonObjects = new LinkedList<>(getAuctions());
         if (type == 1) {
             jsonObjects = new LinkedList<>(Lists.reverse(jsonObjects));
         }
+
+        if (!search.equals("")) {
+            LinkedList<JsonObject> jsonObjects1 = new LinkedList<>();
+
+            for (JsonObject jsonObject : jsonObjects) {
+                String name = ChatColor.stripColor(jsonObject.get("name").getAsString()).toLowerCase();
+                String material = jsonObject.get("type").getAsString().toLowerCase();
+
+                if (name.contains(search.toLowerCase())) {
+                    jsonObjects1.add(jsonObject);
+                } else if (material.contains(search.toLowerCase())) {
+                    jsonObjects1.add(jsonObject);
+                }
+
+            }
+
+            jsonObjects = new LinkedList<>(jsonObjects1);
+        }
+
         return jsonObjects;
     }
 
@@ -709,6 +842,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
                             jsonObject.addProperty("item", sCoder.itemStackArrayToBase64(new ItemStack[]{item.getItemStack()}));
                             jsonObject.addProperty("seller", prefix+player.getName());
                             jsonObject.addProperty("uuid", player.getUniqueId().toString());
+                            jsonObject.addProperty("type", item.getType().toString());
 
                             if (item.getMeta().hasDisplayName()) {
                                 jsonObject.addProperty("name", item.getName());
@@ -739,5 +873,170 @@ public class BazaarHandler implements Listener, CommandExecutor {
             }
         }
         return true;
+    }
+
+    //type = 1 is buy and other sell
+    public void openMarketMenu(Player player, int type, boolean b) {
+        String name = type == 1 ? "Buy Instantly" : "Sell Instantly";
+
+        if (!categoryMap.containsKey(player.getUniqueId())) {
+            categoryMap.put(player.getUniqueId(), BazaarCategory.PLANTS);
+        }
+        BazaarCategory bazaarCategory = categoryMap.get(player.getUniqueId());
+
+        Menu menu;
+        Map<BazaarCategory, Menu> menus;
+
+        if (!marketMenus.containsKey(player.getUniqueId())) {
+            menus = new HashMap<>();
+            marketMenus.put(player.getUniqueId(), menus);
+        } else {
+            menus = marketMenus.get(player.getUniqueId());
+        }
+
+        if (menus.containsKey(bazaarCategory)) {
+            menu = menus.get(bazaarCategory);
+        } else {
+            menu = new Menu(6*9, name);
+            menu.setSlot(49, new Item(Material.RED_STAINED_GLASS_PANE, 1, "&cGo Back"));
+            menus.put(bazaarCategory, menu);
+        }
+        marketMenus.put(player.getUniqueId(), menus);
+        updateMarket(menu, player);
+
+        menu.open(player, b);
+    }
+
+    private void updateMarket(Menu menu, Player player) {
+        BazaarCategory bazaarCategory = categoryMap.get(player.getUniqueId());
+        Map<BazaarCategory, JsonObject> dataMap;
+
+        if (marketData.containsKey(player.getUniqueId())) {
+            dataMap = marketData.get(player.getUniqueId());
+        } else {
+            dataMap = new HashMap<>();
+        }
+
+        JsonObject jsonObject;
+        if (dataMap.containsKey(bazaarCategory)) {
+            jsonObject = dataMap.get(bazaarCategory);
+        } else {
+            jsonObject = new JsonObject();
+            jsonObject.addProperty("page", 1);
+            jsonObject.addProperty("stack", 1);
+
+            dataMap.put(bazaarCategory, jsonObject);
+        }
+        marketData.put(player.getUniqueId(), dataMap);
+
+        int currentPage = jsonObject.get("page").getAsInt();
+        int stack = jsonObject.get("stack").getAsInt();
+
+
+        for (int i = 0; i < 21; i++) {
+            menu.setSlot(staticSlots[i], new Item(Material.AIR));
+        }
+
+        LinkedList<BazaarItem> items = BazaarItem.getGroup(bazaarCategory);
+        int type = menu.getName().equalsIgnoreCase("Buy Instantly") ? 1 : 0;
+
+        PlayerWrapper playerWrapper = new PlayerWrapper(player);
+        double currentCash = playerWrapper.getDouble("cash");
+
+        for (int i = 0; i < staticSize; i++) {
+            final int index = i + (currentPage - 1) * staticSize;
+            if (items.size()-1 < index) {
+                break;
+            }
+
+            final int slot = staticSlots[i];
+            final BazaarItem bazaarItem = items.get(index);
+            final double price = type == 1 ? bazaarItem.getBuy() : bazaarItem.getSell() * stack;
+
+            Item item;
+
+            try {
+                item = BazaarCache.shop.get(bazaarItem.getNbt()).clone();
+            } catch (Exception e) {
+                item = new Item(Material.BARRIER, 1, "&cError!");
+            }
+
+            List<String> lore = item.getLore();
+            lore.add("");
+            lore.add("&e&m                     ");
+            lore.add("&7Amount: &bx"+stack);
+            if (type == 1) {
+                lore.add("&7Cost: &6" + TUtil.toFancyDouble(price) + " Cash");
+            } else {
+                lore.add("&7Earnings: &6" + TUtil.toFancyDouble(price) + " Cash");
+            }
+            lore.add("");
+
+            if (type == 1) {
+                if (currentCash >= price) {
+                    lore.add("&7You &a&lCAN&7 afford this &a:)");
+                    lore.add("&a✔ &eClick to buy!");
+                    item.setItemStack(NBTEditor.addString(item.getItemStack(), "true", String.valueOf(true)));
+                } else {
+                    double neededCash = price - currentCash;
+
+                    lore.add("&7You &c&lCAN'T&7 afford this &c:(");
+                    lore.add("&4✘ &cYou're missing &6$" + TUtil.toFancyDouble(neededCash) + "&c!");
+                }
+            } else {
+                boolean has = false;
+                final int requiredAmount = stack;
+                int currentAmount = 0;
+
+                for (ItemStack itemStack : player.getInventory().getContents()) {
+                    if (itemStack != null) {
+                        if (itemStack.getType() == item.getType()) {
+                            currentAmount += itemStack.getAmount();
+
+                            if (currentAmount >= requiredAmount) {
+                                has = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (has) {
+                    lore.add("&7You &a&lHAVE&7 enough items &a:)");
+                    lore.add("&a✔ &eClick to sell!");
+                    item.setItemStack(NBTEditor.addString(item.getItemStack(), "true", String.valueOf(true)));
+
+                } else {
+                    int neededItems = requiredAmount - currentAmount;
+
+                    lore.add("&7You &c&lDON'T HAVE&7 enough items &c:(");
+                    lore.add("&4✘ &cYou're missing &bx"+neededItems+" items&c!");
+                }
+
+            }
+
+            item.setLore(lore);
+
+            item.setItemStack(NBTEditor.addString(item.getItemStack(), "cost", String.valueOf(price)));
+            item.setItemStack(NBTEditor.addString(item.getItemStack(), "index", String.valueOf(index)));
+            item.setItemStack(NBTEditor.addString(item.getItemStack(), "stack", String.valueOf(stack)));
+
+            menu.setSlot(slot, item);
+        }
+
+        for (int i = 0; i < 7; i++) {
+            menu.setSlot(37 + i, staticBlack);
+        }
+
+        //pages start
+        int auctionsSize = items.size();
+
+        if ((double)auctionsSize / 21 > (double)currentPage) {
+            menu.setSlot(43, staticNext);
+        }
+
+        if (currentPage > 1) {
+            menu.setSlot(37, staticPrevious);
+        }
     }
 }
