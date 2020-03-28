@@ -7,6 +7,7 @@ import me.tecc.tropica.Gamemode.GamemodeSurvival;
 import me.tecc.tropica.HelpCommands.HelpCommand;
 import me.tecc.tropica.commands.*;
 import me.tecc.tropica.events.BasicEventHandler;
+import me.tecc.tropica.events.SleepingEventHandler;
 import me.tecc.tropica.features.backpacks.BackpackHandler;
 import me.tecc.tropica.features.bazaar.BazaarHandler;
 import me.tecc.tropica.features.collection.CollectionManager;
@@ -74,6 +75,9 @@ public final class Tropica extends JavaPlugin {
         // init home handler
         new HomeHandler();
 
+        // sleeping
+        new SleepingEventHandler();
+
 
         //Commands <-
         getCommand("broadcast").setExecutor(new BroadcastCommand());
@@ -86,6 +90,7 @@ public final class Tropica extends JavaPlugin {
         getCommand("gmc").setExecutor(new GamemodeCreative());
         getCommand("gma").setExecutor(new GamemodeAdventure());
         getCommand("gms").setExecutor(new GamemodeSurvival());
+        getCommand("undroppable").setExecutor(new UndroppableCommand());
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(player, "");

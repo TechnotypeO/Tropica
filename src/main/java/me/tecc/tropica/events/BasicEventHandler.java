@@ -245,11 +245,18 @@ public class BasicEventHandler implements Listener {
 
     @EventHandler
     public void onItemDrpo(PlayerDropItemEvent event) {
+        Item item = new Item(event.getItemDrop().getItemStack());
+
         if (event.getItemDrop().getItemStack().getType() == Material.NETHER_STAR) {
-            Item item = new Item(event.getItemDrop().getItemStack());
             if (item.getName().equals(TUtil.toColor("&aTropica Menu &7(Right Click)"))) {
                 event.setCancelled(true);
+                return;
             }
+        }
+
+        if (NBTEditor.hasString(item.getItemStack(), "drop")) {
+            event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 0.5f);
+            event.setCancelled(true);
         }
     }
 

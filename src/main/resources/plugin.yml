@@ -63,3 +63,6 @@ commands:
     usage: /<command>
     aliases:
       - gm0
+  undroppable:
+    aliases:
+      - undrop
