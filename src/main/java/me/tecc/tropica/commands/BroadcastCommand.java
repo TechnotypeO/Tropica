@@ -15,10 +15,10 @@ public class BroadcastCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (player.hasPermission("Broadcast.use")) {
-                String message = "";
+                StringBuilder message = new StringBuilder();
                 for (String part : args) {
-                    if (message != "") message += " ";
-                    message += part;
+                    if (!message.toString().equals("")) message.append(" ");
+                    message.append(part);
                 }
                 Bukkit.getServer().broadcastMessage(toColor("&2&lTropica &7» &e" + message));
             }

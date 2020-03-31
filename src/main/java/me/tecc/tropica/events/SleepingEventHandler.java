@@ -1,5 +1,7 @@
 package me.tecc.tropica.events;
 
+import jdk.internal.loader.BuiltinClassLoader;
+import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,6 +36,8 @@ public class SleepingEventHandler implements Listener {
             int number = 100 * sleeping / size;
             if (number >= 75) {
                 player.getWorld().setTime(1000);
+                Bukkit.broadcastMessage(TUtil.toColor("&aThe night has passed!"));
+
                 e.setCancelled(true);
             }
         }
