@@ -19,15 +19,15 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Furnace;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
@@ -46,7 +46,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BasicEventHandler implements Listener {
-    private Random random = new Random();
+    private final Random random = new Random();
     public BasicEventHandler() {
         Bukkit.getPluginManager().registerEvents(this, Tropica.getTropica());
     }
@@ -342,7 +342,7 @@ public class BasicEventHandler implements Listener {
             }
         }
     }
-    private Map<UUID, List<Integer>> ids = new HashMap<>();
+    private final Map<UUID, List<Integer>> ids = new HashMap<>();
 
     private void spawnMoney(double price, String pattern, Location location, Collection<Player> entities) {
         Location center = location.getBlock().getLocation().add(0.5, -1.0, 0.5);

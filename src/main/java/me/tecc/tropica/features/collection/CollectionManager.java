@@ -17,7 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,7 +53,7 @@ public class CollectionManager {
             .build(new CacheLoader<Material, CollectionLeaderboard>() {
 
                 @Override
-                public CollectionLeaderboard load(Material material) throws Exception {
+                public CollectionLeaderboard load(Material material) {
                     final CollectionLeaderboard collectionLeaderboard = new CollectionLeaderboard(material);
                     CollectionContainer collectionContainer = CollectionContainer.getInstance();
 
@@ -163,62 +163,59 @@ public class CollectionManager {
         }
 
         // getting the original name of item
-        net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(itemStack.clone());
-        originalName = itemStack1.getItem().g(itemStack1).getLegacyString();
+        net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(itemStack);
+        originalName = itemStack1.getItem().h(itemStack1).getText();
 
         // getting the collection
         CollectionContainer.getInstance().getAsync(path, null,
-                new Consumer<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        final MemorySection memorySection;
-                        final Map<String, Double> map;
+                o -> {
+                    final MemorySection memorySection;
+                    final Map<String, Double> map;
 
-                        if (o != null) {
-                            if (o instanceof HashMap) {
-                                map = (Map<String, Double>) o;
-                            } else {
-                                map = new HashMap<>();
-                                memorySection = (MemorySection) o;
-                                memorySection.getValues(false).forEach((key, value) -> map.put(key, (double) value));
-                            }
+                    if (o != null) {
+                        if (o instanceof HashMap) {
+                            map = (Map<String, Double>) o;
                         } else {
                             map = new HashMap<>();
+                            memorySection = (MemorySection) o;
+                            memorySection.getValues(false).forEach((key, value) -> map.put(key, (double) value));
                         }
-
-                        // the amount of collection
-                        double collection = map.getOrDefault(material.toString(), 0D);
-
-                        // check for the new item
-                        if (collection < 1) {
-                            // fancy message and sounds
-                            TextComponent textComponent = new TextComponent(TUtil.toColor(
-                                    "\n&r &r &r &r &r &a&l◆ &2&lNEW COLLECTION UNLOCKED &a&l◆\n"+
-                                            "&r &r &r&7You've unlocked &f"+originalName+"\n"+
-                                            "&r &r &r&7Your reward: &b+1 Knowledge Point"+
-                                            "\n\n"+
-                                            "&r &r &r&7[&eClick here to open your collection menu&7]\n"
-                            ));
-                            textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    new ComponentBuilder(TUtil.toColor("&bClick here to open!")).create()));
-                            textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/collection "+material.toString()));
-
-                            player.spigot().sendMessage(textComponent);
-                            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 2.0f);
-
-                            PlayerWrapper playerWrapper = new PlayerWrapper(player);
-                            int knowledge = playerWrapper.getInt("knowledge") + 1;
-                            playerWrapper.setInt("knowledge", knowledge);
-
-                            Sidebar.updateKnowledge(playerWrapper, 1);
-                        }
-                        // increasing the collection
-                        collection += amount;
-                        map.put(material.toString(), collection);
-
-                        // saving process
-                        CollectionContainer.getInstance().setAsync(path, map, null);
+                    } else {
+                        map = new HashMap<>();
                     }
+
+                    // the amount of collection
+                    double collection = map.getOrDefault(material.toString(), 0D);
+
+                    // check for the new item
+                    if (collection < 1) {
+                        // fancy message and sounds
+                        TextComponent textComponent = new TextComponent(TUtil.toColor(
+                                "\n&r &r &r &r &r &a&l◆ &2&lNEW COLLECTION UNLOCKED &a&l◆\n"+
+                                        "&r &r &r&7You've unlocked &f"+originalName+"\n"+
+                                        "&r &r &r&7Your reward: &b+1 Knowledge Point"+
+                                        "\n\n"+
+                                        "&r &r &r&7[&eClick here to open your collection menu&7]\n"
+                        ));
+                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                new ComponentBuilder(TUtil.toColor("&bClick here to open!")).create()));
+                        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/collection "+material.toString()));
+
+                        player.spigot().sendMessage(textComponent);
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 2.0f);
+
+                        PlayerWrapper playerWrapper = new PlayerWrapper(player);
+                        int knowledge = playerWrapper.getInt("knowledge") + 1;
+                        playerWrapper.setInt("knowledge", knowledge);
+
+                        Sidebar.updateKnowledge(playerWrapper, 1);
+                    }
+                    // increasing the collection
+                    collection += amount;
+                    map.put(material.toString(), collection);
+
+                    // saving process
+                    CollectionContainer.getInstance().setAsync(path, map, null);
                 });
     }
 

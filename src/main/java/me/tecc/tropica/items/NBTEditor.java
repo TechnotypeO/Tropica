@@ -1,14 +1,14 @@
 package me.tecc.tropica.items;
 
 
-import net.minecraft.server.v1_15_R1.NBTTagCompound;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class NBTEditor {
     public static NBTTagCompound getTag(org.bukkit.inventory.ItemStack item) {
-        net.minecraft.server.v1_15_R1.ItemStack itemNms = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_16_R3.ItemStack itemNms = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag;
         if (itemNms.hasTag()) tag = itemNms.getTag();
         else tag = new NBTTagCompound();
@@ -16,7 +16,7 @@ public class NBTEditor {
     }
 
     public static org.bukkit.inventory.ItemStack setTag(org.bukkit.inventory.ItemStack item, NBTTagCompound tag) {
-        net.minecraft.server.v1_15_R1.ItemStack itemNms = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_16_R3.ItemStack itemNms = CraftItemStack.asNMSCopy(item);
         itemNms.setTag(tag);
         return CraftItemStack.asBukkitCopy(itemNms);
     }

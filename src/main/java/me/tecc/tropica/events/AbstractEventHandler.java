@@ -1,16 +1,21 @@
 package me.tecc.tropica.events;
 
-import me.tecc.tropica.Tropica;
 import me.tecc.tropica.exceptions.MethodNotFoundException;
 import me.tecc.tropica.management.EventHandlerManager;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AbstractEventHandler implements Listener {
     /**

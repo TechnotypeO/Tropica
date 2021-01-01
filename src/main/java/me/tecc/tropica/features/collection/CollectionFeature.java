@@ -14,7 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -152,8 +152,8 @@ public class CollectionFeature implements CommandExecutor, Listener {
 
                 if (collection > 0) {
                     // getting the original name of item
-                    net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
-                    String originalName = itemStack1.getItem().g(itemStack1).getLegacyString();
+                    net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
+                    String originalName = itemStack1.getItem().h(itemStack1).getText();
 
                     // creating fancy item
                     Item item = new Item(material, 1, "&e"+originalName,
@@ -263,8 +263,8 @@ public class CollectionFeature implements CommandExecutor, Listener {
 
                         if (collection > 0) {
                             // getting the original name of item
-                            net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
-                            String originalName = itemStack1.getItem().g(itemStack1).getLegacyString();
+                            net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
+                            String originalName = itemStack1.getItem().h(itemStack1).getText();
 
                             // preparing item
                             Item item = new Item(material, 1, "&e"+originalName,

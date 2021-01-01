@@ -27,7 +27,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,19 +46,19 @@ public class BazaarHandler implements Listener, CommandExecutor {
     private static BazaarHandler bazaarHandler;
     private final BazaarRunnable bazaarRunnable;
 
-    private LinkedHashMap<UUID, Menu> menuMap = new LinkedHashMap<>();
-    private LinkedHashMap<UUID, Menu> personalMenuMap = new LinkedHashMap<>();
-    private LinkedList<JsonObject> auctions = new LinkedList<>();
+    private final LinkedHashMap<UUID, Menu> menuMap = new LinkedHashMap<>();
+    private final LinkedHashMap<UUID, Menu> personalMenuMap = new LinkedHashMap<>();
+    private final LinkedList<JsonObject> auctions = new LinkedList<>();
 
-    private LinkedHashMap<UUID, BazaarCategory> categoryMap = new LinkedHashMap<>();
-    private LinkedHashMap<UUID, Map<BazaarCategory, Menu>> marketMenus = new LinkedHashMap<>();
-    private LinkedHashMap<UUID, Map<BazaarCategory, JsonObject>> marketData = new LinkedHashMap<>();
+    private final LinkedHashMap<UUID, BazaarCategory> categoryMap = new LinkedHashMap<>();
+    private final LinkedHashMap<UUID, Map<BazaarCategory, Menu>> marketMenus = new LinkedHashMap<>();
+    private final LinkedHashMap<UUID, Map<BazaarCategory, JsonObject>> marketData = new LinkedHashMap<>();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final double MAX_PRICE = 1000000000000.0D;
 
-    private Map<UUID, Integer> pages = new HashMap<>();
-    private Map<UUID, BazaarFilter> filter = new HashMap<>();
+    private final Map<UUID, Integer> pages = new HashMap<>();
+    private final Map<UUID, BazaarFilter> filter = new HashMap<>();
 
     private final int[] staticSlots = new int[] {
             10, 11, 12, 13, 14, 15, 16,
@@ -1134,8 +1134,8 @@ public class BazaarHandler implements Listener, CommandExecutor {
                             if (item.getMeta().hasDisplayName()) {
                                 jsonObject.addProperty("name", item.getName());
                             } else {
-                                net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(item.getType()).clone());
-                                String originalName = itemStack1.getItem().g(itemStack1).getLegacyString();
+                                net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(item.getType()).clone());
+                                String originalName = itemStack1.getItem().h(itemStack1).getText();
                                 jsonObject.addProperty("name", "&a"+originalName);
                             }
 
@@ -1270,8 +1270,8 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
             item.setAmount(stack);
 
-            net.minecraft.server.v1_15_R1.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(item.getType()).clone());
-            String originalName = itemStack1.getItem().g(itemStack1).getLegacyString();
+            net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(item.getType()).clone());
+                                String originalName = itemStack1.getItem().h(itemStack1).getText();
             item.setName("&a"+originalName);
 
             List<String> lore = item.getLore();
