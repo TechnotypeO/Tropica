@@ -7,6 +7,7 @@ import me.tecc.tropica.Gamemode.GamemodeSurvival;
 import me.tecc.tropica.HelpCommands.HelpCommand;
 import me.tecc.tropica.commands.*;
 import me.tecc.tropica.events.BasicEventHandler;
+import me.tecc.tropica.events.ColoredSigns;
 import me.tecc.tropica.events.SleepingEventHandler;
 import me.tecc.tropica.features.backpacks.BackpackHandler;
 import me.tecc.tropica.features.bazaar.BazaarHandler;
@@ -55,7 +56,7 @@ public final class Tropica extends JavaPlugin {
         // initialize listeners
         new BasicEventHandler();
         new TropicaMenu();
-
+        new ColoredSigns();
         // init recipes
         try {
             new RecipeHandler();
@@ -119,5 +120,7 @@ public final class Tropica extends JavaPlugin {
      */
     public static void registerListener(Listener listener) {
         getTropica().getServer().getPluginManager().registerEvents(listener, getTropica());
+
+
     }
 }
