@@ -7,6 +7,7 @@ import me.tecc.tropica.items.NBTEditor;
 import me.tecc.tropica.menus.Menu;
 import me.tecc.tropica.menus.TropicaMenu;
 import me.tecc.tropica.storage.CollectionContainer;
+import net.minecraft.server.v1_16_R3.LocaleLanguage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -153,7 +154,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
                 if (collection > 0) {
                     // getting the original name of item
                     net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
-                    String originalName = itemStack1.getItem().h(itemStack1).getText();
+                    String originalName = LocaleLanguage.a().a(itemStack1.getItem().getName());
 
                     // creating fancy item
                     Item item = new Item(material, 1, "&e"+originalName,
@@ -264,7 +265,7 @@ public class CollectionFeature implements CommandExecutor, Listener {
                         if (collection > 0) {
                             // getting the original name of item
                             net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(material).clone());
-                            String originalName = itemStack1.getItem().h(itemStack1).getText();
+                            String originalName = LocaleLanguage.a().a(itemStack1.getItem().getName());
 
                             // preparing item
                             Item item = new Item(material, 1, "&e"+originalName,

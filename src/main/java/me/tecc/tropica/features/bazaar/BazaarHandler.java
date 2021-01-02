@@ -23,6 +23,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_16_R3.LocaleLanguage;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class BazaarHandler implements Listener, CommandExecutor {
     private static BazaarHandler bazaarHandler;
@@ -315,15 +317,12 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
                                 } else {
                                     BazaarContainer.getInstance().getAsync(uuid.toString(),
-                                            0.0D, new Consumer<Object>() {
-                                        @Override
-                                        public void accept(Object o) {
-                                            double cash = (double) o;
-                                            cash += price;
+                                            0.0D, o -> {
+                                                double cash = (double) o;
+                                                cash += price;
 
-                                            BazaarContainer.getInstance().setAsync(uuid.toString(), cash, null);
-                                        }
-                                    });
+                                                BazaarContainer.getInstance().setAsync(uuid.toString(), cash, null);
+                                            });
                                 }
 
                             });
@@ -385,7 +384,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
 
                     JsonObject jsonObject = auctions.get(index);
                     String nbt = jsonObject.get("item").getAsString();
-                    UUID uuid = UUID.fromString(jsonObject.get("uuid").getAsString());
+
                     double views = 0;
                     if (jsonObject.has("views")) {
                         views = jsonObject.get("views").getAsDouble();
@@ -919,6 +918,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
             final JsonObject jsonObject = jsonObjects.get(index);
             final double price = jsonObject.get("price").getAsDouble();
             final String seller = jsonObject.get("seller").getAsString();
+            final int auctionId = jsonObject.get("auctionId").getAsInt();
             boolean isOwner = player.getUniqueId().toString().equalsIgnoreCase(jsonObject.get("uuid").getAsString());
 
             Item item;
@@ -954,7 +954,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
             }
             item.setLore(lore);
             item.setItemStack(NBTEditor.addString(item.getItemStack(), "cost", String.valueOf(price)));
-            item.setItemStack(NBTEditor.addString(item.getItemStack(), "index", String.valueOf(index)));
+            item.setItemStack(NBTEditor.addString(item.getItemStack(), "index", String.valueOf(auctionId)));
             if (!isOwner) {
                 if (currentCash >= price) {
                     item.setItemStack(NBTEditor.addString(item.getItemStack(), "true", String.valueOf(true)));
@@ -1046,6 +1046,50 @@ public class BazaarHandler implements Listener, CommandExecutor {
         if (type == 1) {
             jsonObjects = new LinkedList<>(Lists.reverse(jsonObjects));
         }
+        if (type == 2) {
+            // highest price
+            Map<JsonObject, Double> jsonObjectDoubleMap = new HashMap<>();
+
+            for (JsonObject jsonObject : jsonObjects) {
+                double price = jsonObject.get("price").getAsDouble();
+                jsonObjectDoubleMap.put(jsonObject, price);
+            }
+
+            Map<JsonObject, Double> sorted = jsonObjectDoubleMap.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+            LinkedList<JsonObject> list = new LinkedList<>();
+            sorted.forEach((key, value) -> {
+                list.add(key);
+            });
+            return new LinkedList<>(Lists.reverse(list));
+        }
+        if (type == 3) {
+            // lowest price
+            Map<JsonObject, Double> jsonObjectDoubleMap = new HashMap<>();
+
+            for (JsonObject jsonObject : jsonObjects) {
+                double price = jsonObject.get("price").getAsDouble();
+                jsonObjectDoubleMap.put(jsonObject, price);
+            }
+
+            Map<JsonObject, Double> sorted = jsonObjectDoubleMap.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+            LinkedList<JsonObject> list = new LinkedList<>();
+            sorted.forEach((key, value) -> {
+                list.add(key);
+            });
+            return list;
+        }
 
         if (!search.equals("")) {
             LinkedList<JsonObject> jsonObjects1 = new LinkedList<>();
@@ -1135,9 +1179,12 @@ public class BazaarHandler implements Listener, CommandExecutor {
                                 jsonObject.addProperty("name", item.getName());
                             } else {
                                 net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(item.getType()).clone());
-                                String originalName = itemStack1.getItem().h(itemStack1).getText();
+                                String originalName = LocaleLanguage.a().a(itemStack1.getItem().getName());
                                 jsonObject.addProperty("name", "&a"+originalName);
                             }
+
+                            int auctionId = auctions.size();
+                            jsonObject.addProperty("auctionId", auctionId);
 
                             auctions.add(jsonObject);
                             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -1271,7 +1318,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
             item.setAmount(stack);
 
             net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(new ItemStack(item.getType()).clone());
-                                String originalName = itemStack1.getItem().h(itemStack1).getText();
+                                String originalName = LocaleLanguage.a().a(itemStack1.getItem().getName());
             item.setName("&a"+originalName);
 
             List<String> lore = item.getLore();

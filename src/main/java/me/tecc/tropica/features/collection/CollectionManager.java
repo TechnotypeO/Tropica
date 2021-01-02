@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_16_R3.LocaleLanguage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -164,7 +165,7 @@ public class CollectionManager {
 
         // getting the original name of item
         net.minecraft.server.v1_16_R3.ItemStack itemStack1 = CraftItemStack.asNMSCopy(itemStack);
-        originalName = itemStack1.getItem().h(itemStack1).getText();
+        originalName = LocaleLanguage.a().a(itemStack1.getItem().getName());
 
         // getting the collection
         CollectionContainer.getInstance().getAsync(path, null,
