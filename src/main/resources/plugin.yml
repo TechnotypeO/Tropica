@@ -17,10 +17,12 @@ commands:
     aliases:
       - items
       - collect
+      - col
   recipes:
     aliases:
       - recipe
       - craftts
+      - rec
   craft:
     aliases:
       - crafting
@@ -39,6 +41,7 @@ commands:
     aliases:
       - shop
       - ah
+      - baz
   search:
   sell:
     aliases:

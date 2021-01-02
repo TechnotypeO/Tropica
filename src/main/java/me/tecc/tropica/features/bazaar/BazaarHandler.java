@@ -57,7 +57,7 @@ public class BazaarHandler implements Listener, CommandExecutor {
     private final LinkedHashMap<UUID, Map<BazaarCategory, JsonObject>> marketData = new LinkedHashMap<>();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-    private final double MAX_PRICE = 1000000000000.0D;
+    private final static double MAX_PRICE = 1000000000000.0D;
 
     private final Map<UUID, Integer> pages = new HashMap<>();
     private final Map<UUID, BazaarFilter> filter = new HashMap<>();

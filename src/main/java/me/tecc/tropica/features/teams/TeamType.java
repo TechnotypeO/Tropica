@@ -5,9 +5,9 @@ public enum TeamType {
     SPIDER("&cSpider"),
     MONKEY("&6Monkey"),
     SILVERFISH("&7Silverfish"),
-    NONE("&8None");
+    NONE("&eNone");
 
-    private String prefix;
+    private final String prefix;
 
     TeamType(String prefix) {
         this.prefix = prefix;

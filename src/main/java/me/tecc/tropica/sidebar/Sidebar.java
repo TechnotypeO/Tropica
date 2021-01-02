@@ -15,19 +15,15 @@ public class Sidebar {
         int knowledge = playerWrapper.getInt("knowledge");
         double cash = playerWrapper.getDouble("cash");
 
-        DynamicScoreboard d = new DynamicScoreboard(TUtil.toColor("&2[&a&lTROPICA&2] &e&lBETA!"), DisplaySlot.SIDEBAR);
+        DynamicScoreboard d = new DynamicScoreboard(TUtil.toColor("&2[&a&lTROPICA&2]"), DisplaySlot.SIDEBAR);
         d.addField("&7&o" + TUtil.getCurrentDateString(), "");
-        d.addField("", "");
-        d.addField("This game is", " currently");
-        d.addField("under heavy ", "development&7!");
-        d.addField("&e&m-----------", "&e&m---------");
         d.addField("", "");
         d.addField("Team: ", TeamHandler.getInstance().getTeamTypeMap().getOrDefault(player.getUniqueId(), TeamType.NONE).getPrefix());
         d.addField("", "");
         d.addField("Knowledge:", " &b"+TUtil.toFancyNumber(knowledge));
         d.addField("Cash: ", "&6"+TUtil.toFancyDouble(cash));
         d.addField("", "");
-        d.addField("&asloverteam.net", "");
+        d.addField("&a178.32.126.88", "&a:25555");
         d.applyScoreboard(player);
     }
 
