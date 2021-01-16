@@ -11,7 +11,6 @@ public class ColoredSigns implements Listener {
 
     public ColoredSigns() {
         Bukkit.getPluginManager().registerEvents(this, Tropica.getTropica());
-
     }
 
     @EventHandler

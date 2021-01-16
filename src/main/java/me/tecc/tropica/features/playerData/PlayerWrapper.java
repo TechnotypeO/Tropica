@@ -11,7 +11,7 @@ import java.util.UUID;
  * Very useful Wrapper for all kind of player data.
  * Create a new instance of this class along with your code
  * when you want to save or get certain data.
- *
+ * <p>
  * Set values are only saved in {@link PlayerFeature}'s json field.
  * All data is automatically being saved every 5 minutes without any lag.
  * After creating instance you can use all get/set methods in your code.
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PlayerWrapper {
     private final PlayerFeature playerFeature;
     private final JsonObject jsonObject;
-    private UUID uuid = null;
+    private final UUID uuid = null;
     private Player player = null;
 
     /**

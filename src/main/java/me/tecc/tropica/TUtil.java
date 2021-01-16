@@ -19,7 +19,6 @@ public class TUtil {
      *
      * @param key The key to use.
      * @return A {@link NamespacedKey} formatted like "{@code tropica:<key>}"
-     *
      * @see NamespacedKey
      */
     public static NamespacedKey getNamespacedKey(String key) {
@@ -31,6 +30,7 @@ public class TUtil {
     /**
      * Transforms text with alternative color codes into
      * minecraft valid colored text.
+     *
      * @param s Text with alternative color codes.
      * @return {@link String}, Minecraft valid colored text.
      */
@@ -40,6 +40,7 @@ public class TUtil {
 
     /**
      * Same as toColor(String[]) method, but for a string list.
+     *
      * @param s String list
      * @return {@link List<String>}, translated to Minecraft valid colored text.
      */
@@ -53,6 +54,7 @@ public class TUtil {
 
     /**
      * Same as toColor(String) method, but for a string array.
+     *
      * @param s String array
      * @return {@link String[]}, translated to Minecraft valid colored text.
      */
@@ -67,6 +69,7 @@ public class TUtil {
     /**
      * Transforms a number into fancy cost.
      * Example: 1000 --> 1,000
+     *
      * @param num The number to transform into a fancy number.
      * @return a {@link String} of the fancy number.
      */
@@ -77,6 +80,7 @@ public class TUtil {
     /**
      * Transforms a double into fancy cost.
      * Example 50000.2 --> 50,000.2
+     *
      * @param num The double to transform into fancy cost.
      * @return a {@link String} of the double (in fancy cost)
      */
@@ -86,6 +90,7 @@ public class TUtil {
 
     /**
      * Translates a fancy-cost number (as a String) to Integer.
+     *
      * @param num The string to translate into Integer.
      * @return {@link Integer}
      */
@@ -102,6 +107,7 @@ public class TUtil {
 
     /**
      * Translates a fancy-cost double (as a String) to Double.
+     *
      * @param num The string to translate into Double.
      * @return {@link Double}
      */
@@ -129,6 +135,7 @@ public class TUtil {
     /**
      * Gets the current date.
      * Format: dd/MM/yyyy
+     *
      * @return Current date as {@link String}
      */
     public static String getCurrentDateString() {

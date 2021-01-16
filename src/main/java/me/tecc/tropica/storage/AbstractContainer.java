@@ -17,8 +17,8 @@ import java.util.function.Consumer;
 public abstract class AbstractContainer implements IStorage {
     private final static ExecutorService executor = Executors.newCachedThreadPool();
 
-    private Plugin plugin;
-    private File file;
+    private final Plugin plugin;
+    private final File file;
     public FileConfiguration config;
     private static int saving = 0;
     private static BukkitRunnable bukkitRunnable = null;
@@ -39,6 +39,7 @@ public abstract class AbstractContainer implements IStorage {
 
     /**
      * A method which saves the file.
+     *
      * @return true/false (successfully saved or not)
      */
     public boolean save() {
@@ -55,6 +56,7 @@ public abstract class AbstractContainer implements IStorage {
 
     /**
      * A method which saves the file asynchronously.
+     *
      * @return true/false (successfully saved or not)
      */
     public boolean saveAsync() {
@@ -83,10 +85,10 @@ public abstract class AbstractContainer implements IStorage {
      * from the specified container/file.
      * Consumer has been used here to use the callback.
      *
-     * @param path The path for the object you need
+     * @param path          The path for the object you need
      * @param defaultObject The default return value.
-     * @param callback The consumer that will, once
-     *                 ready, accept the return value.
+     * @param callback      The consumer that will, once
+     *                      ready, accept the return value.
      */
     public void getAsync(String path, Object defaultObject, Consumer<Object> callback) {
         executor.execute(() -> callback.accept(this.getSync(path, defaultObject)));
@@ -102,7 +104,7 @@ public abstract class AbstractContainer implements IStorage {
      * A method which passes the data from config at a
      * certain path next to the getAsync method.
      *
-     * @param path the path for the object you need
+     * @param path          the path for the object you need
      * @param defaultObject default return value
      * @return the object
      */
@@ -113,12 +115,12 @@ public abstract class AbstractContainer implements IStorage {
     /**
      * A method which sets a certain path to a value
      * and automatically saves it in the file.
-     *
+     * <p>
      * Also returns a consumer which informs either the
      * saving process was successful or not.
      *
-     * @param path the path for the object to be saved at
-     * @param value the value which you want it to be set to
+     * @param path     the path for the object to be saved at
+     * @param value    the value which you want it to be set to
      * @param consumer the consumer with true or false return, can be null
      *                 if you don't need to work with process of successful
      *                 saving. So, if you want to inform a player in chat

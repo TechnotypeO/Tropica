@@ -2,27 +2,8 @@ name: Tropica
 version: ${project.version}
 main: me.tecc.tropica.Tropica
 api-version: 1.13
-authors: [Technotype, MarcusSlover, funtodead]
-description: 'Tropica is custom sloverteam survival plugin which will not be public to all github users.'
-website: 'https://tecc.me/projects/tropica/'
 
 commands:
-  help:
-    aliases:
-      - helpme
-  broadcast:
-    aliases:
-      - bc
-  collection:
-    aliases:
-      - items
-      - collect
-      - col
-  recipes:
-    aliases:
-      - recipe
-      - craftts
-      - rec
   craft:
     aliases:
       - crafting
@@ -30,42 +11,9 @@ commands:
   enderchest:
     aliases:
       - ec
-  spawn:
   sethome:
   delhome:
   home:
     aliases:
       - h
   surface:
-  bazaar:
-    aliases:
-      - shop
-      - ah
-      - baz
-  search:
-  sell:
-    aliases:
-      - auction
-  gmspec:
-    description: Gamemode spec!
-    usage: /<command>
-    aliases:
-      - gm3
-  gmc:
-    description: Gamemode Creative!
-    usage: /<command>
-    aliases:
-      - gm1
-  gma:
-    description: Gamemode Adventure!
-    usage: /<command>
-    aliases:
-      - gm2
-  gms:
-    description: Gamemode Survival!
-    usage: /<command>
-    aliases:
-      - gm0
-  undroppable:
-    aliases:
-      - undrop

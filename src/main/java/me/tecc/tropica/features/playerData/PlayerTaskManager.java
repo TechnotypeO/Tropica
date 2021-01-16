@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  */
 public class PlayerTaskManager extends BukkitRunnable {
     private static PlayerTaskManager instance;
-    private ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     public PlayerTaskManager() {
         instance = this;
@@ -25,7 +25,7 @@ public class PlayerTaskManager extends BukkitRunnable {
 
     @Override
     public void run() {
-        executorService.execute(()->{
+        executorService.execute(() -> {
             Collection<PlayerFeature> collection = PlayerFeature.getCollection();
             collection.forEach(this::save);
         });
@@ -36,7 +36,7 @@ public class PlayerTaskManager extends BukkitRunnable {
             long data = System.currentTimeMillis();
 
             Player player = c.getPlayer();
-            UUID uuid = player.getUniqueId() ;
+            UUID uuid = player.getUniqueId();
 
             String toBeSaved = c.getJsonObject().toString();
             PlayerContainer.getInstance().setAsync(uuid.toString(), toBeSaved, aBoolean -> {
@@ -45,7 +45,7 @@ public class PlayerTaskManager extends BukkitRunnable {
                     long seconds = (difference / 1000);
 
                     TextComponent textComponent = new TextComponent(
-                            TUtil.toColor("&aSaved your data in &f"+(Math.ceil((double)seconds))+"s&a!"));
+                            TUtil.toColor("&aSaved your data in &f" + (Math.ceil((double) seconds)) + "s&a!"));
 
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, textComponent);
                 }

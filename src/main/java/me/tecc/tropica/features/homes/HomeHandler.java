@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import me.tecc.tropica.TUtil;
 import me.tecc.tropica.Tropica;
 import me.tecc.tropica.features.playerData.PlayerWrapper;
-import me.tecc.tropica.texts.Text;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -59,7 +58,7 @@ public class HomeHandler implements CommandExecutor, Listener {
                     }
 
                     if (hasHome) {
-                        new Text("&c&lOOPS! &7This home already exists!").send(player);
+                        player.sendMessage(TUtil.toColor("&c&lOOPS! &7This home already exists!"));
                     } else {
                         Location loc = player.getLocation();
 
@@ -74,12 +73,12 @@ public class HomeHandler implements CommandExecutor, Listener {
 
                         jsonArray.add(jsonObject);
 
-                        new Text("&a&lSUCCESS! &7Your home was successfully set!").send(player);
+                        player.sendMessage(TUtil.toColor("&a&lSUCCESS! &7Your home was successfully set!"));
                     }
                     playerWrapper.setJsonArray("homes", jsonArray);
 
                 } else {
-                    new Text("&c&lOOPS! &7Missing arguments: &f/sethome (text)&7!").send(player);
+                    player.sendMessage(TUtil.toColor("&c&lOOPS! &7Missing arguments: &f/sethome (text)&7!"));
                 }
                 return true;
             }
@@ -109,15 +108,15 @@ public class HomeHandler implements CommandExecutor, Listener {
                     }
 
                     if (!hasHome) {
-                        new Text("&c&lOOPS! &7This home doesn't exist!").send(player);
+                        player.sendMessage(TUtil.toColor("&c&lOOPS! &7This home doesn't exist!"));
                     } else {
                         jsonArray.remove(home);
-                        new Text("&a&lSUCCESS! &7Your home was successfully removed!").send(player);
+                        player.sendMessage(TUtil.toColor("&a&lSUCCESS! &7Your home was successfully removed!"));
                     }
 
                     playerWrapper.setJsonArray("homes", jsonArray);
                 } else {
-                    new Text("&c&lOOPS! &7Missing arguments: &f/delhome (text)&7!").send(player);
+                    player.sendMessage(TUtil.toColor("&c&lOOPS! &7Missing arguments: &f/delhome (text)&7!"));
                 }
                 return true;
             }
@@ -128,7 +127,7 @@ public class HomeHandler implements CommandExecutor, Listener {
                 if (playerWrapper.getJsonObject().has("homes")) {
                     jsonArray = playerWrapper.getJsonArray("homes");
                 } else {
-                    new Text("&c&lOOPS! &7You don't have any homes yet!").send(player);
+                    player.sendMessage(TUtil.toColor("&c&lOOPS! &7You don't have any homes yet!"));
                     return true;
                 }
 
@@ -146,7 +145,7 @@ public class HomeHandler implements CommandExecutor, Listener {
                     }
 
                     if (home == null) {
-                        new Text("&c&lOOPS! &7This home doesn't exist!").send(player);
+                        player.sendMessage(TUtil.toColor("&c&lOOPS! &7This home doesn't exist!"));
                     } else {
                         Location loc;
 
@@ -166,7 +165,7 @@ public class HomeHandler implements CommandExecutor, Listener {
                         loc = new Location(world, x, y, z, yaw, pitch);
                         player.teleport(loc);
 
-                        new Text("&a&lSUCCESS! &7Teleported to your home!").send(player);
+                        player.sendMessage(TUtil.toColor("&a&lSUCCESS! &7Teleported to your home!"));
                     }
 
 
@@ -175,15 +174,15 @@ public class HomeHandler implements CommandExecutor, Listener {
                     TextComponent empty = new TextComponent(TUtil.toColor("\n"));
 
                     for (JsonElement jsonElement : jsonArray) {
-                       JsonObject jsonObject = jsonElement.getAsJsonObject();
-                       String name = jsonObject.get("name").getAsString();
-                       TextComponent textComponent1 = new TextComponent(TUtil.toColor("&9✥ &6"+name.toUpperCase()));
-                       textComponent1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/home "+name));
-                       textComponent1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                               new ComponentBuilder(TUtil.toColor("&7Click here to teleport to &6"+name+"&7 home!")).create()));
+                        JsonObject jsonObject = jsonElement.getAsJsonObject();
+                        String name = jsonObject.get("name").getAsString();
+                        TextComponent textComponent1 = new TextComponent(TUtil.toColor("&9✥ &6" + name.toUpperCase()));
+                        textComponent1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/home " + name));
+                        textComponent1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                new ComponentBuilder(TUtil.toColor("&7Click here to teleport to &6" + name + "&7 home!")).create()));
 
-                       textComponent.addExtra(empty);
-                       textComponent.addExtra(textComponent1);
+                        textComponent.addExtra(empty);
+                        textComponent.addExtra(textComponent1);
                     }
 
                     player.spigot().sendMessage(textComponent);

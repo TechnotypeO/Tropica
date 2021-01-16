@@ -13,19 +13,18 @@ public abstract class AbstractDatabase implements IStorage {
     /**
      * Instantiates an AbstractDatabase. This is shorthand for
      * {@code new AbstractDatabase(file, false)}.
+     *
      * @param file The file to load.
-     *
-     * @throws IOException If an IO exception occurred.
-     *                      Cases of this happening are:
-     *                      <ul>
-     *                          <li>if the file could not be created, see
-     *                          {@code createIfNotFound}</li>
-     *                          <li>if the file was not found, see
-     *                          {@code createIfNotFound}</li>
-     *                      </ul>
+     * @throws IOException           If an IO exception occurred.
+     *                               Cases of this happening are:
+     *                               <ul>
+     *                                   <li>if the file could not be created, see
+     *                                   {@code createIfNotFound}</li>
+     *                                   <li>if the file was not found, see
+     *                                   {@code createIfNotFound}</li>
+     *                               </ul>
      * @throws FileNotFoundException If the file was not found, and
-     *                                {@code createIfNotFound} is false.
-     *
+     *                               {@code createIfNotFound} is false.
      * @see AbstractDatabase#AbstractDatabase(File, boolean)
      */
     public AbstractDatabase(File file) throws IOException {
@@ -36,20 +35,19 @@ public abstract class AbstractDatabase implements IStorage {
     /**
      * Instantiates an AbstractDatabase.
      *
-     * @param file The file to load.
+     * @param file             The file to load.
      * @param createIfNotFound If it should create the file in the case that it does not
      *                         already exist.
-     *
-     * @throws IOException If an IO exception occurred.
-     *                      Cases of this happening are:
-     *                      <ul>
-     *                          <li>if the file could not be created, see
-     *                          {@code createIfNotFound}</li>
-     *                          <li>if the file was not found, see
-     *                          {@code createIfNotFound}</li>
-     *                      </ul>
+     * @throws IOException           If an IO exception occurred.
+     *                               Cases of this happening are:
+     *                               <ul>
+     *                                   <li>if the file could not be created, see
+     *                                   {@code createIfNotFound}</li>
+     *                                   <li>if the file was not found, see
+     *                                   {@code createIfNotFound}</li>
+     *                               </ul>
      * @throws FileNotFoundException If the file was not found, and
-     *                                {@code createIfNotFound} is false.
+     *                               {@code createIfNotFound} is false.
      */
     public AbstractDatabase(File file, boolean createIfNotFound) throws IOException {
         // Checks if the file does not exist
@@ -59,7 +57,7 @@ public abstract class AbstractDatabase implements IStorage {
                 // Create the file.
                 //noinspection ResultOfMethodCallIgnored
                 file.createNewFile();
-            // Else if parameter createIfNotFound is false, throw FileNotFoundException.
+                // Else if parameter createIfNotFound is false, throw FileNotFoundException.
             else throw new FileNotFoundException("Could not find file '" + file + "'.");
     }
 
