@@ -7,8 +7,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
  */
 public class PlayerTaskManager extends BukkitRunnable {
     private static PlayerTaskManager instance;
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     public PlayerTaskManager() {
@@ -36,16 +37,17 @@ public class PlayerTaskManager extends BukkitRunnable {
             long data = System.currentTimeMillis();
 
             Player player = c.getPlayer();
-            UUID uuid = player.getUniqueId();
+            String uuid = player.getName();
 
             String toBeSaved = c.getJsonObject().toString();
-            PlayerContainer.getInstance().setAsync(uuid.toString(), toBeSaved, aBoolean -> {
+            PlayerContainer.getInstance().setAsync(uuid, toBeSaved, aBoolean -> {
                 if (aBoolean) {
                     long difference = System.currentTimeMillis() - data;
                     long seconds = (difference / 1000);
+                    double ceil = Math.ceil((double) seconds);
 
                     TextComponent textComponent = new TextComponent(
-                            TUtil.toColor("&aSaved your data in &f" + (Math.ceil((double) seconds)) + "s&a!"));
+                            TUtil.toColor("&aSaved your data in &f" + decimalFormat.format(ceil) + "s&a!"));
 
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, textComponent);
                 }

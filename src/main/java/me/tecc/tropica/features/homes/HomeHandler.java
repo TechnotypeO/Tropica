@@ -193,7 +193,6 @@ public class HomeHandler implements CommandExecutor, Listener {
         return true;
     }
 
-
     public static HomeHandler getInstance() {
         return homeHandler;
     }

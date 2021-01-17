@@ -48,7 +48,7 @@ public class PlayerFeature {
         this.player = player;
 
         //get json from files
-        PlayerContainer.getInstance().getAsync(player.getUniqueId().toString(), "",
+        PlayerContainer.getInstance().getAsync(player.getName(), "",
                 o -> {
                     final String string = (String) o;
 
